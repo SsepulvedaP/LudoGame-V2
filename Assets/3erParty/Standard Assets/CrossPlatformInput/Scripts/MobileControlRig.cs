@@ -3,6 +3,9 @@ using System;
 using UnityEditor;
 #endif
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+using UnityEngine.InputSystem.UI;
+#endif
 
 
 namespace UnityStandardAssets.CrossPlatformInput
@@ -41,16 +44,41 @@ namespace UnityStandardAssets.CrossPlatformInput
             if (Application.isPlaying) //if in the editor, need to check if we are playing, as start is also called just after exiting play
 #endif
             {
-                UnityEngine.EventSystems.EventSystem system = GameObject.FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+                UnityEngine.EventSystems.EventSystem system = GameObject.FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>();
 
                 if (system == null)
                 {//the scene have no event system, spawn one
                     GameObject o = new GameObject("EventSystem");
 
                     o.AddComponent<UnityEngine.EventSystems.EventSystem>();
-                    o.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                    EnsureCompatibleInputModule(o);
+                }
+                else
+                {
+                    EnsureCompatibleInputModule(system.gameObject);
                 }
             }
+        }
+
+        private void EnsureCompatibleInputModule(GameObject eventSystemObject)
+        {
+#if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
+            UnityEngine.EventSystems.StandaloneInputModule legacyInputModule = eventSystemObject.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            if (legacyInputModule != null)
+            {
+                Destroy(legacyInputModule);
+            }
+
+            if (eventSystemObject.GetComponent<InputSystemUIInputModule>() == null)
+            {
+                eventSystemObject.AddComponent<InputSystemUIInputModule>();
+            }
+#else
+            if (eventSystemObject.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>() == null)
+            {
+                eventSystemObject.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            }
+#endif
         }
 
 #if UNITY_EDITOR
