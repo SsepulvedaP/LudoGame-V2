@@ -148,78 +148,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.5195255, y: 7.557312, z: 9.87816}
   m_Center: {x: 0.020652534, y: 0.86925304, z: -3.3628445}
---- !u!1 &13487459
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 13487462}
-  - component: {fileID: 13487461}
-  - component: {fileID: 13487460}
-  m_Layer: 0
-  m_Name: BartleCuestionario
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &13487460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13487459}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ee10b0a12637a0449dd0663152356af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BartleQuestionnaireRuntimeLayout
-  buildAtRuntimeIfIncomplete: 1
-  copyBaseUrlFromRegistrationClient: 1
---- !u!114 &13487461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13487459}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 380480f949b6da643a7ffee224d23716, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BartleQuestionnaireUI
-  baseUrl: https://ludo-api-48780a3730ba.herokuapp.com/api
-  promptText: {fileID: 0}
-  progressText: {fileID: 0}
-  optionButtons: []
-  statusOrErrorText: {fileID: 0}
-  summaryPanel: {fileID: 0}
-  summaryTitleText: {fileID: 0}
-  summaryDetailsText: {fileID: 0}
-  nextSceneAfterBartle: 
-  closeOrContinueButton: {fileID: 0}
-  beginAutomaticallyOnStart: 1
-  firstPersonWhileQuestions: {fileID: 2029732596}
-  autoFindFirstPersonController: 1
---- !u!4 &13487462
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13487459}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 188.5712, y: -0.00005, z: -771.42883}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &14623770
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6936,7 +6864,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: 1934
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
@@ -9961,9 +9889,7 @@ MonoBehaviour:
   winText: {fileID: 1267395365}
   camara: {fileID: 331693803}
   character: {fileID: 2029732594}
-  mouseLocking: {fileID: 2029732596}
-  bartlePanelRoot: {fileID: 13487459}
-  bartleQuestionnaire: {fileID: 13487461}
+  mouseLocking: {fileID: 0}
 --- !u!1 &1952676203
 GameObject:
   m_ObjectHideFlags: 0
@@ -11637,4 +11563,3 @@ SceneRoots:
   - {fileID: 1641861734}
   - {fileID: 1212827833}
   - {fileID: 331693807}
-  - {fileID: 13487462}

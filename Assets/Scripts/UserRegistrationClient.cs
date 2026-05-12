@@ -24,12 +24,13 @@ public class UserRegistrationClient : MonoBehaviour
     [FormerlySerializedAs("otherPositionSection")]
     public GameObject otherAreaSection;
 
-    [Header("Game")]
-    public string nextSceneName = "Level";
+    [Header("Tras registrarse con éxito")]
+    [Tooltip("Escena que se carga al terminar el registro (nombre exacto, como en Build Settings; p. ej. Level 1). El Bartle puedes montarlo dentro de esa escena.")]
+    public string nextSceneName = "Level 1";
 
     private readonly List<string> countryValues = new List<string>();
     private readonly Dictionary<string, int> areaIdsByTitle = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-    private readonly List<string> areaOptions = new List<string>
+    private readonly List<string> fallbackAreaOptions = new List<string>
     {
         "Ti",
         "Comunicaciones",
@@ -67,6 +68,16 @@ public class UserRegistrationClient : MonoBehaviour
     [Serializable]
     private class CreateUserRequest
     {
+        public string name;
+        public string token;
+        public string country;
+        public int positionId;
+    }
+
+    [Serializable]
+    private class CreateUserResponse
+    {
+        public int id;
         public string name;
         public string token;
         public string country;
@@ -178,7 +189,7 @@ public class UserRegistrationClient : MonoBehaviour
 
         dropdownArea.onValueChanged.RemoveListener(OnAreaChanged);
         dropdownArea.ClearOptions();
-        dropdownArea.AddOptions(areaOptions);
+        dropdownArea.AddOptions(new List<string> { "Cargando áreas…" });
         dropdownArea.onValueChanged.AddListener(OnAreaChanged);
         OnAreaChanged(dropdownArea.value);
     }
@@ -221,26 +232,79 @@ public class UserRegistrationClient : MonoBehaviour
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("[UserRegistrationClient] Error cargando posiciones: " + request.error);
+            ApplyAreaDropdownFromList(fallbackAreaOptions);
             yield break;
         }
 
-        string wrappedJson = "{\"items\":" + request.downloadHandler.text + "}";
+        string raw = request.downloadHandler.text;
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            ApplyAreaDropdownFromList(fallbackAreaOptions);
+            yield break;
+        }
+
+        string wrappedJson = "{\"items\":" + raw + "}";
         PositionApiList response = JsonUtility.FromJson<PositionApiList>(wrappedJson);
 
         areaIdsByTitle.Clear();
 
-        if (response?.items != null)
+        if (response?.items == null || response.items.Length == 0)
         {
-            foreach (PositionApiItem position in response.items)
-            {
-                if (position == null || position.id <= 0 || string.IsNullOrWhiteSpace(position.title))
-                {
-                    continue;
-                }
-
-                areaIdsByTitle[position.title] = position.id;
-            }
+            ApplyAreaDropdownFromList(fallbackAreaOptions);
+            yield break;
         }
+
+        List<PositionApiItem> sorted = new List<PositionApiItem>(response.items);
+        sorted.Sort((a, b) => a.id.CompareTo(b.id));
+
+        foreach (PositionApiItem position in sorted)
+        {
+            if (position == null || position.id <= 0 || string.IsNullOrWhiteSpace(position.title))
+            {
+                continue;
+            }
+
+            areaIdsByTitle[position.title] = position.id;
+        }
+
+        List<string> labels = new List<string>();
+        foreach (PositionApiItem position in sorted)
+        {
+            if (position == null || position.id <= 0 || string.IsNullOrWhiteSpace(position.title))
+            {
+                continue;
+            }
+
+            labels.Add(position.title.Trim());
+        }
+
+        if (labels.Count == 0)
+        {
+            ApplyAreaDropdownFromList(fallbackAreaOptions);
+            yield break;
+        }
+
+        labels.Add("Otro");
+        ApplyAreaDropdownFromList(labels);
+    }
+
+    /// <summary>
+    /// Puebla el dropdown de área y mantiene la lógica de "Otro".
+    /// </summary>
+    private void ApplyAreaDropdownFromList(List<string> optionLabels)
+    {
+        if (dropdownArea == null || optionLabels == null || optionLabels.Count == 0)
+        {
+            return;
+        }
+
+        dropdownArea.onValueChanged.RemoveListener(OnAreaChanged);
+        dropdownArea.ClearOptions();
+        dropdownArea.AddOptions(new List<string>(optionLabels));
+        dropdownArea.value = 0;
+        dropdownArea.RefreshShownValue();
+        dropdownArea.onValueChanged.AddListener(OnAreaChanged);
+        OnAreaChanged(dropdownArea.value);
     }
 
     private void LoadFallbackCountries()
@@ -458,6 +522,17 @@ public class UserRegistrationClient : MonoBehaviour
         }
 
         Debug.Log("[UserRegistrationClient] Usuario registrado correctamente.");
+
+        CreateUserResponse created = JsonUtility.FromJson<CreateUserResponse>(request.downloadHandler.text);
+        if (created != null && created.id > 0)
+        {
+            UserSession.Save(created.id, created.token, created.name);
+            Debug.Log("[UserRegistrationClient] user_id guardado en sesión: " + created.id);
+        }
+        else
+        {
+            Debug.LogWarning("[UserRegistrationClient] La respuesta no incluyó id de usuario; Bartle/API posteriores no tendrán user_id.");
+        }
 
         SceneManager.LoadScene(nextSceneName);
     }

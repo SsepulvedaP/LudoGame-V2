@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameControl : MonoBehaviour
 {
@@ -11,48 +9,128 @@ public class GameControl : MonoBehaviour
     private GameObject winText, camara, character;
     [SerializeField] private UnityStandardAssets.Characters.FirstPerson.FirstPersonController mouseLocking;
 
+    [Header("Tras el puzzle: cuestionario Ludo (Bartle)")]
+    [Tooltip("Panel raíz del cuestionario (normalmente empieza desactivado). Se activa al completar el puzzle.")]
+    [SerializeField] private GameObject bartlePanelRoot;
+    [SerializeField] private BartleQuestionnaireUI bartleQuestionnaire;
+
     public static bool youWin;
 
-    // Start is called before the first frame update
+    private const int ExpectedPieceCount = 16;
+
     void Start()
     {
-        winText.SetActive(false);
-        youWin = false;
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (pictures[0].rotation.z == 0 &&
-            pictures[1].rotation.z == 0 &&
-            pictures[2].rotation.z == 0 &&
-            pictures[3].rotation.z == 0&&
-            pictures[4].rotation.z == 0 &&
-            pictures[5].rotation.z == 0 &&
-            pictures[6].rotation.z == 0 &&
-            pictures[7].rotation.z == 0 &&
-            pictures[8].rotation.z == 0 &&
-            pictures[9].rotation.z == 0 &&
-            pictures[10].rotation.z == 0 &&
-            pictures[11].rotation.z == 0 &&
-            pictures[12].rotation.z == 0 &&
-            pictures[13].rotation.z == 0 &&
-            pictures[14].rotation.z == 0 &&
-            pictures[15].rotation.z == 0)
-            
-           
-
+        if (winText != null)
         {
-            youWin = true;
-            winText.SetActive(true);
-            mouseLocking.m_MouseLook.SetCursorLock(true);
-            character.SetActive(true);
-            Destroy(camara);
-
-
-
+            winText.SetActive(false);
         }
 
+        youWin = false;
+
+        if (pictures == null || pictures.Length < ExpectedPieceCount)
+        {
+            Debug.LogWarning(
+                $"[GameControl] Asigna en el inspector un array 'pictures' con al menos {ExpectedPieceCount} elementos. Ahora: {(pictures == null ? 0 : pictures.Length)}.",
+                this);
+        }
+
+        if (mouseLocking != null && mouseLocking.m_MouseLook == null)
+        {
+            Debug.LogWarning(
+                "[GameControl] FirstPersonController sin MouseLook asignado; al ganar no se podrá desbloquear el cursor desde aquí.",
+                this);
+        }
+    }
+
+    void Update()
+    {
+        if (youWin)
+        {
+            return;
+        }
+
+        if (!AreAllPiecesAligned())
+        {
+            return;
+        }
+
+        youWin = true;
+
+        bool showBartle = bartlePanelRoot != null || bartleQuestionnaire != null;
+        if (showBartle)
+        {
+            if (winText != null)
+            {
+                winText.SetActive(false);
+            }
+
+            if (bartlePanelRoot != null)
+            {
+                bartlePanelRoot.SetActive(true);
+            }
+            else if (bartleQuestionnaire != null)
+            {
+                bartleQuestionnaire.gameObject.SetActive(true);
+            }
+
+            if (bartleQuestionnaire != null)
+            {
+                bartleQuestionnaire.BeginQuestionnaire();
+            }
+        }
+        else if (winText != null)
+        {
+            winText.SetActive(true);
+        }
+
+        // Con cuestionario Bartle: el cursor debe estar libre para los botones (no bloquear como en FPS).
+        if (showBartle)
+        {
+            if (mouseLocking != null && mouseLocking.m_MouseLook != null)
+            {
+                mouseLocking.m_MouseLook.SetCursorLock(false);
+            }
+
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if (mouseLocking != null && mouseLocking.m_MouseLook != null)
+        {
+            mouseLocking.m_MouseLook.SetCursorLock(true);
+        }
+
+        if (character != null)
+        {
+            character.SetActive(true);
+        }
+
+        if (camara != null)
+        {
+            Destroy(camara);
+        }
+    }
+
+    private bool AreAllPiecesAligned()
+    {
+        if (pictures == null || pictures.Length < ExpectedPieceCount)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < ExpectedPieceCount; i++)
+        {
+            Transform t = pictures[i];
+            if (t == null)
+            {
+                return false;
+            }
+
+            if (t.rotation.z != 0f)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
