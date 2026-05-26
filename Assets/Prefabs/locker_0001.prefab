@@ -233,8 +233,57 @@ PrefabInstance:
         type: 3}
       insertIndex: 0
       addedObject: {fileID: 2818137601826518253}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4423045620967985251, guid: fe3bb76ba0ff54c43b625e3a4ad45497,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8123456789012345602}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fe3bb76ba0ff54c43b625e3a4ad45497,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8123456789012345604}
   m_SourcePrefab: {fileID: 100100000, guid: fe3bb76ba0ff54c43b625e3a4ad45497, type: 3}
+--- !u!1 &8123456789012345603 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: fe3bb76ba0ff54c43b625e3a4ad45497,
+    type: 3}
+  m_PrefabInstance: {fileID: 6926832102160733954}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8123456789012345604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123456789012345603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d4f02c5e3a9f7520c6d8b4a1e9c637, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockerKeypadSetup
+  keypad: {fileID: 0}
+  door: {fileID: 8123456789012345602}
+--- !u!1 &8123456789012345605 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4423045620967985251, guid: fe3bb76ba0ff54c43b625e3a4ad45497,
+    type: 3}
+  m_PrefabInstance: {fileID: 6926832102160733954}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8123456789012345602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8123456789012345605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7c3e91b4f2d8e6419b0c5a3e7f1d428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LockerDoor
+  openAngle: 105
+  openDuration: 0.85
+  localRotationAxis: {x: 0, y: 1, z: 0}
 --- !u!4 &7470262755672289513 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fe3bb76ba0ff54c43b625e3a4ad45497,

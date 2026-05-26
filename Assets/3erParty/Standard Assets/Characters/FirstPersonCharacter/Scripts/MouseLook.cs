@@ -20,6 +20,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private Quaternion m_CharacterTargetRot;
         private Quaternion m_CameraTargetRot;
         private bool m_cursorIsLocked = true;
+        private float m_suppressEscapeUnlockUntil;
 
         public void Init(Transform character, Transform camera)
         {
@@ -65,6 +66,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
         }
 
+        /// <summary>
+        /// Tras modos con cursor libre (p. ej. keypad), evita que el mismo Escape deje el FPS desbloqueado.
+        /// </summary>
+        public void ForceCursorLocked()
+        {
+            m_cursorIsLocked = true;
+            lockCursor = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        public void SuppressEscapeUnlock(float seconds)
+        {
+            m_suppressEscapeUnlockUntil = Time.unscaledTime + seconds;
+        }
+
         public void UpdateCursorLock()
         {
             //if the user set "lockCursor" we check & properly lock the cursos
@@ -74,7 +91,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void InternalLockUpdate()
         {
-            if(Input.GetKeyUp(KeyCode.Escape))
+            if(Input.GetKeyUp(KeyCode.Escape) && Time.unscaledTime >= m_suppressEscapeUnlockUntil)
             {
                 m_cursorIsLocked = false;
             }

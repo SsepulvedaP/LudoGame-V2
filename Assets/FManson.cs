@@ -39,5 +39,14 @@ public class FManson : MonoBehaviour
         PressE.SetActive(false);
     }
 
+    public void DisablePermanently()
+    {
+        enabled = false;
 
+        if (PressE != null)
+        {
+            Destroy(PressE);
+            PressE = null;
+        }
+    }
 }
