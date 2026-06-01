@@ -25,7 +25,7 @@ public class BartleQuestionnaireRuntimeLayout : MonoBehaviour
 
         if (copyBaseUrlFromRegistrationClient)
         {
-            UserRegistrationClient reg = FindFirstObjectByType<UserRegistrationClient>();
+            UserRegistrationClient reg = FindAnyObjectByType<UserRegistrationClient>();
             if (reg != null && !string.IsNullOrWhiteSpace(reg.baseUrl))
             {
                 ui.baseUrl = reg.baseUrl.TrimEnd('/');
@@ -87,7 +87,7 @@ public class BartleQuestionnaireRuntimeLayout : MonoBehaviour
 
         TMP_Text prompt = CreateTmp("PromptText", mainPanel.transform, 32, TextAlignmentOptions.TopLeft,
             new Vector2(80, -140), new Vector2(-80, -320));
-        prompt.enableWordWrapping = true;
+        prompt.textWrappingMode = TextWrappingModes.Normal;
 
         TMP_Text progress = CreateTmp("ProgressText", mainPanel.transform, 22, TextAlignmentOptions.TopRight,
             new Vector2(80, -80), new Vector2(-80, -130));
@@ -137,7 +137,7 @@ public class BartleQuestionnaireRuntimeLayout : MonoBehaviour
             new Vector2(32, -32), new Vector2(-32, -80));
         TMP_Text sumDetails = CreateTmpInParent(box.transform, "SummaryDetails", 22, TextAlignmentOptions.TopLeft,
             new Vector2(32, -100), new Vector2(-32, -220));
-        sumDetails.enableWordWrapping = true;
+        sumDetails.textWrappingMode = TextWrappingModes.Normal;
 
         Button continueBtn = CreateCenteredButton(box.transform, "Continuar", new Vector2(0, -280));
         RectTransform cRt = continueBtn.GetComponent<RectTransform>();
@@ -156,7 +156,7 @@ public class BartleQuestionnaireRuntimeLayout : MonoBehaviour
 
     private static void EnsureEventSystemExists()
     {
-        if (FindFirstObjectByType<EventSystem>() != null)
+        if (FindAnyObjectByType<EventSystem>() != null)
         {
             return;
         }

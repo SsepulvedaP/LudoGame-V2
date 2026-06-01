@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class PlayerInteraction : MonoBehaviour
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hit;
 
+        bool keyEPressedThisFrame = Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
+
         // Si el rayo impacta con algo dentro de la distancia máxima
         if (Physics.Raycast(ray, out hit, interactionDistance))
         {
@@ -37,7 +40,7 @@ public class PlayerInteraction : MonoBehaviour
                 if (!KeyItem.isKeyCollected)
                 {
                     hoverText = "[ Presiona 'E' para tomar Llave ]";
-                    if (Input.GetKeyDown(KeyCode.E))
+                    if (keyEPressedThisFrame)
                     {
                         key.RecogerLlave();
                     }
@@ -51,7 +54,7 @@ public class PlayerInteraction : MonoBehaviour
                     if (KeyItem.isKeyCollected)
                     {
                         hoverText = "[ Presiona 'E' para Abrir Caja ]";
-                        if (Input.GetKeyDown(KeyCode.E))
+                        if (keyEPressedThisFrame)
                         {
                             box.AbrirCaja();
                         }

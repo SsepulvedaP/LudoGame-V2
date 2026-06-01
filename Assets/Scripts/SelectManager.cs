@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NavKeypad;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SelectManager : MonoBehaviour
 {
-    [SerializeField] private string selectableTag = "Selectable";
     [SerializeField] private Material highlightMaterial;
     [SerializeField] private Material defaultMaterial;
     [SerializeField] private InventoryManager bagManager;
@@ -26,6 +26,7 @@ public class SelectManager : MonoBehaviour
     private readonly List<GameObject> inventory = new List<GameObject>();
     private Transform _selection;
     private Material _savedSelectionMaterial;
+    private Transform _lastHitTransform;
 
     private void Awake()
     {
@@ -45,9 +46,15 @@ public class SelectManager : MonoBehaviour
             return;
         }
 
-        var aimScreen = keypadFocus != null
-            ? keypadFocus.GetAimScreenPosition()
-            : new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+        var aimScreen = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+        if (keypadFocus != null && keypadFocus.IsFocused) {
+            aimScreen = keypadFocus.GetAimScreenPosition();
+        } else {
+            var breakerFocus = FindAnyObjectByType<BreakerBoxCameraFocus>();
+            if (breakerFocus != null && breakerFocus.IsFocused) {
+                aimScreen = breakerFocus.GetAimScreenPosition();
+            }
+        }
         var ray = cam.ScreenPointToRay(aimScreen);
 
         var maxDistance = interactWithKeypad
@@ -56,17 +63,45 @@ public class SelectManager : MonoBehaviour
 
         if (!Physics.Raycast(ray, out var hit, maxDistance))
         {
+            _lastHitTransform = null;
             UpdateBagUi();
             return;
         }
+
+        if (hit.transform != _lastHitTransform)
+        {
+            _lastHitTransform = hit.transform;
+            Debug.Log($"[SelectManager] Apuntando a: {hit.transform.name} (Distancia: {hit.distance:F2}m)");
+        }
+
+        // Detectar si el usuario presionó o mantiene presionado el botón de interacción (Clic izquierdo/Gamepad/Touch)
+        bool clickDown = (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
+            || (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame);
+
+        bool clickHeld = (Mouse.current != null && Mouse.current.leftButton.isPressed)
+            || (Gamepad.current != null && Gamepad.current.buttonSouth.isPressed)
+            || (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed);
 
         if (interactWithKeypad
             && hit.distance <= keypadDistance
             && hit.collider.TryGetComponent(out KeypadButton keypadButton))
         {
-            if (Input.GetButtonDown("Fire1") || Input.GetMouseButtonDown(0))
+            if (clickDown)
             {
                 keypadButton.PressButton();
+            }
+
+            UpdateBagUi();
+            return;
+        }
+
+        if (hit.distance <= keypadDistance
+            && hit.collider.TryGetComponent(out BreakerSwitch breakerSwitch))
+        {
+            if (clickDown)
+            {
+                breakerSwitch.ToggleSwitch();
             }
 
             UpdateBagUi();
@@ -78,18 +113,38 @@ public class SelectManager : MonoBehaviour
             UpdateBagUi();
             return;
         }
-
-        if (hit.distance <= selectableDistance
-            && hit.transform.CompareTag(selectableTag)
-            && hit.transform.TryGetComponent(out PickableManager pickable))
+        
+        var bFocus = FindAnyObjectByType<BreakerBoxCameraFocus>();
+        if (bFocus != null && (bFocus.IsFocused || bFocus.IsBreakerBoxManagerUnlocked))
         {
-            var selectionRenderer = hit.transform.GetComponent<Renderer>();
-            if (selectionRenderer != null)
+            UpdateBagUi();
+            return;
+        }
+
+        // Detectamos el objeto si tiene el componente PickableManager
+        if (hit.transform.TryGetComponent(out PickableManager pickable))
+        {
+            if (hit.distance <= selectableDistance)
             {
-                ApplyHighlight(hit.transform, isKeypad: false);
-                if (Input.GetButton("Fire1"))
+                // Buscar el Renderer incluso en los hijos (por si el modelo está dentro del objeto)
+                var selectionRenderer = hit.transform.GetComponentInChildren<Renderer>();
+                if (selectionRenderer != null)
                 {
+                    ApplyHighlight(selectionRenderer.transform, isKeypad: false);
+                }
+                
+                if (clickHeld)
+                {
+                    // Auto-asignar el selector por si BookSetup falló en asignarlo
+                    if (pickable.Selector == null) pickable.Selector = this;
                     pickable.IsPickable();
+                }
+            }
+            else
+            {
+                if (Time.frameCount % 30 == 0) // Loggear cada 30 frames para no spamear
+                {
+                    Debug.LogWarning($"[SelectManager] Apuntando a '{hit.transform.name}' pero está muy lejos: {hit.distance:F2}m (Límite: {selectableDistance:F2}m). Acércate más o aumenta 'Selectable Distance' en el Inspector.");
                 }
             }
         }
@@ -161,6 +216,34 @@ public class SelectManager : MonoBehaviour
         if (inventory.Count < 3)
         {
             inventory.Add(gObject);
+
+            // Comprobar tareas automáticamente
+            if (TaskManager.Instance != null)
+            {
+                string itemName = gObject.name.ToLower();
+                
+                // Tarea: Obtener la llave
+                if (itemName.Contains("key") || itemName.Contains("llave"))
+                {
+                    TaskManager.Instance.CompletarLlave();
+                }
+
+                // Tarea: Recoger los libros (Verificar si ya tiene los 3)
+                int bookCount = 0;
+                foreach (var item in inventory)
+                {
+                    string invName = item.name.ToLower();
+                    if (invName.Contains("buch") || invName.Contains("book") || invName.Contains("libro"))
+                    {
+                        bookCount++;
+                    }
+                }
+
+                if (bookCount >= 3)
+                {
+                    TaskManager.Instance.CompletarLibros();
+                }
+            }
         }
     }
 

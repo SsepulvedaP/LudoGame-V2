@@ -4,8 +4,8 @@ public class KeyItem : MonoBehaviour
 {
     public static bool isKeyCollected = false;
 
-    [Tooltip("ID de la pregunta de motivación en la base de datos (ej. 26)")]
-    public int motivationQuestionId = 26;
+    [Tooltip("IDs de las preguntas de motivación en la base de datos")]
+    public int[] motivationQuestionIds = new int[] { 26 };
 
     // Ahora la lógica de presionar 'E' se maneja desde el jugador usando Raycast
     public void RecogerLlave()
@@ -15,10 +15,13 @@ public class KeyItem : MonoBehaviour
             isKeyCollected = true;
             Debug.Log("¡Llave recogida!");
             
-            if (MotivationInGameUI.Instance != null)
+            if (TaskManager.Instance != null)
+                TaskManager.Instance.CompletarLlave();
+            
+            if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
             {
-                // Muestra la pregunta y cuando termina oculta la llave
-                MotivationInGameUI.Instance.ShowQuestion(motivationQuestionId, () => {
+                // Muestra la secuencia de preguntas y cuando termina oculta la llave
+                MotivationInGameUI.Instance.ShowQuestions(motivationQuestionIds, () => {
                     gameObject.SetActive(false); 
                 });
             }

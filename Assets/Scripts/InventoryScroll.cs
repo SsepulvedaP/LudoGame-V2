@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class InventoryScroll : MonoBehaviour
 {
@@ -11,7 +11,7 @@ public class InventoryScroll : MonoBehaviour
     {
         if (keypadFocus == null)
         {
-            keypadFocus = FindFirstObjectByType<KeypadCameraFocus>();
+            keypadFocus = FindAnyObjectByType<KeypadCameraFocus>();
         }
 
         scale = new Vector3(225f, 0f, 0f);

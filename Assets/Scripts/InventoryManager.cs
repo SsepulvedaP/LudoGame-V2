@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -9,38 +10,54 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private SelectManager selector;
     [SerializeField] private Image[] image;
     [SerializeField] private Sprite[] resources;
+#pragma warning disable 0414
     private bool bagInUse;
+#pragma warning restore 0414
 
     private void Update()
     {
-        if (bagInUse)
+        bag = selector.TemporaryInventory();
+        
+        for (int i = 0; i < image.Length; i++)
         {
-            bag = selector.TemporaryInventory();
-            for(int i = 0; i < bag.Length; i++)
+            if (image[i] == null) continue;
+
+            if (bag != null && i < bag.Length && bag[i] != null)
             {
-                if(bag[i].name == "Cube")
+                if (bag[i].TryGetComponent<PickableManager>(out var pickable))
                 {
-                    image[i].sprite = resources[1]; 
+                    image[i].sprite = pickable.ItemSprite;
+                    image[i].enabled = pickable.ItemSprite != null;
                 }
-                else if (bag[i].name == "Sphere")
+                else
                 {
-                    image[i].sprite = resources[2];
-                }
-                else if (bag[i].name == "Triangle")
-                {
-                    image[i].sprite = resources[3];
-                }
-                else if (bag[i].name == "Box")
-                {
-                    image[i].sprite = resources[4];
+                    image[i].enabled = false;
                 }
             }
-        }
-        if (Input.GetKey(KeyCode.G)) //Borrar cuando ya este todo implementado. esto es solo de verificacion
-        {
-            for (int i = 0; i <3; i++)
+            else
             {
-                Debug.Log(bag[i].name);
+                image[i].sprite = null;
+                image[i].enabled = false;
+            }
+        }
+
+        bool keyGPressed = false;
+        if (Keyboard.current != null)
+        {
+            keyGPressed = Keyboard.current.gKey.isPressed;
+        }
+
+        if (keyGPressed) //Borrar cuando ya este todo implementado. esto es solo de verificacion
+        {
+            if (bag != null)
+            {
+                for (int i = 0; i < bag.Length; i++)
+                {
+                    if (bag[i] != null)
+                    {
+                        Debug.Log(bag[i].name);
+                    }
+                }
             }
         }
     }
@@ -53,5 +70,4 @@ public class InventoryManager : MonoBehaviour
     {
         bagInUse = false;
     }
-
 }

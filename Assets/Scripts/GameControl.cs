@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class GameControl : MonoBehaviour
 {
@@ -55,6 +55,12 @@ public class GameControl : MonoBehaviour
         }
 
         youWin = true;
+        
+        // Completar la tarea del cuadro en el Checklist
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.CompletarCuadro();
+        }
 
         bool showBartle = bartlePanelRoot != null || bartleQuestionnaire != null;
         if (showBartle)

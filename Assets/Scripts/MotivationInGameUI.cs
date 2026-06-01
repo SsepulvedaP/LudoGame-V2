@@ -83,7 +83,7 @@ public class MotivationInGameUI : MonoBehaviour
         // Buscar el FPSController si no está asignado
         if (firstPersonController == null)
         {
-            firstPersonController = FindFirstObjectByType<FirstPersonController>();
+            firstPersonController = FindAnyObjectByType<FirstPersonController>();
         }
     }
 
@@ -132,6 +132,55 @@ public class MotivationInGameUI : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         ShowQuestion(questionId, null);
+    }
+
+    /// <summary>
+    /// Método simplificado para secuencias de preguntas, usando un string separado por comas
+    /// </summary>
+    public void ShowQuestionsSimpleString(string commaSeparatedIds)
+    {
+        if (!gameObject.activeInHierarchy)
+        {
+            gameObject.SetActive(true);
+        }
+        
+        StartCoroutine(WaitAndShowQuestionsSimple(commaSeparatedIds));
+    }
+
+    private IEnumerator WaitAndShowQuestionsSimple(string commaSeparatedIds)
+    {
+        yield return new WaitForSeconds(1.5f);
+        
+        string[] parts = commaSeparatedIds.Split(',');
+        List<int> ids = new List<int>();
+        foreach (string part in parts)
+        {
+            if (int.TryParse(part.Trim(), out int id))
+            {
+                ids.Add(id);
+            }
+        }
+        
+        ShowQuestions(ids.ToArray(), null);
+    }
+
+    /// <summary>
+    /// Muestra una secuencia de preguntas una tras otra.
+    /// </summary>
+    public void ShowQuestions(int[] questionIds, Action onComplete = null)
+    {
+        StartCoroutine(ShowQuestionsRoutine(questionIds, onComplete));
+    }
+
+    private IEnumerator ShowQuestionsRoutine(int[] questionIds, Action onComplete)
+    {
+        foreach (int qId in questionIds)
+        {
+            bool answered = false;
+            ShowQuestion(qId, () => answered = true);
+            yield return new WaitUntil(() => answered);
+        }
+        onComplete?.Invoke();
     }
 
     /// <summary>

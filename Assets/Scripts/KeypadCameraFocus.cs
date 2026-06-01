@@ -116,7 +116,7 @@ public class KeypadCameraFocus : MonoBehaviour
             return;
         }
 
-        keypad = FindFirstObjectByType<Keypad>();
+        keypad = FindAnyObjectByType<Keypad>();
     }
 
     private void OnKeypadAccessGranted()
@@ -129,6 +129,9 @@ public class KeypadCameraFocus : MonoBehaviour
         _keypadUnlocked = true;
         SetPromptVisible(false);
         _selectManager?.SetKeypadInteractionEnabled(false);
+        
+        if (TaskManager.Instance != null)
+            TaskManager.Instance.CompletarCaja();
 
         if (_unlockRoutine != null)
         {
@@ -183,7 +186,7 @@ public class KeypadCameraFocus : MonoBehaviour
 
     private static void DisableLegacyKeypadPrompts()
     {
-        var legacyHandlers = FindObjectsByType<FManson>(FindObjectsSortMode.None);
+        var legacyHandlers = FindObjectsByType<FManson>(FindObjectsInactive.Exclude);
         for (var i = 0; i < legacyHandlers.Length; i++)
         {
             legacyHandlers[i].DisablePermanently();

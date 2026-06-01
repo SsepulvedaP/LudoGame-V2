@@ -17,8 +17,8 @@ public class QuestionBox : MonoBehaviour
     public float openTime = 3f;
 
     [Header("Motivación")]
-    [Tooltip("ID de la pregunta de motivación en la base de datos (ej. 27)")]
-    public int motivationQuestionId = 27;
+    [Tooltip("IDs de las preguntas de motivación en la base de datos")]
+    public int[] motivationQuestionIds = new int[] { 27 };
 
     void Start()
     {
@@ -58,16 +58,16 @@ public class QuestionBox : MonoBehaviour
         }
 
         // 2. Apenas termina de abrirse, mostramos la pregunta de motivación
-        if (MotivationInGameUI.Instance != null)
+        if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
         {
-            bool questionAnswered = false;
+            bool questionsAnswered = false;
             
             // Pausar el flujo hasta que el jugador responda
-            MotivationInGameUI.Instance.ShowQuestion(motivationQuestionId, () => {
-                questionAnswered = true;
+            MotivationInGameUI.Instance.ShowQuestions(motivationQuestionIds, () => {
+                questionsAnswered = true;
             });
             
-            yield return new WaitUntil(() => questionAnswered);
+            yield return new WaitUntil(() => questionsAnswered);
         }
 
         // 3. Permanece abierta un momento más

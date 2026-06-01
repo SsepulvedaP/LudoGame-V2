@@ -25,7 +25,7 @@ public class MotivationQuestionnaireRuntimeLayout : MonoBehaviour
 
         if (copyBaseUrlFromRegistrationClient)
         {
-            UserRegistrationClient reg = FindFirstObjectByType<UserRegistrationClient>();
+            UserRegistrationClient reg = FindAnyObjectByType<UserRegistrationClient>();
             if (reg != null && !string.IsNullOrWhiteSpace(reg.baseUrl))
             {
                 ui.baseUrl = reg.baseUrl.TrimEnd('/');
@@ -89,7 +89,7 @@ public class MotivationQuestionnaireRuntimeLayout : MonoBehaviour
         // 3. Texto de la pregunta (Prompt)
         TMP_Text prompt = CreateTmp("PromptText", mainPanel.transform, 32, TextAlignmentOptions.TopLeft,
             new Vector2(80, -140), new Vector2(-80, -320));
-        prompt.enableWordWrapping = true;
+        prompt.textWrappingMode = TextWrappingModes.Normal;
 
         // 4. Texto de estado/error (Status)
         TMP_Text status = CreateTmp("StatusText", mainPanel.transform, 18, TextAlignmentOptions.Bottom,
@@ -138,7 +138,7 @@ public class MotivationQuestionnaireRuntimeLayout : MonoBehaviour
 
     private static void EnsureEventSystemExists()
     {
-        if (FindFirstObjectByType<EventSystem>() != null)
+        if (FindAnyObjectByType<EventSystem>() != null)
         {
             return;
         }

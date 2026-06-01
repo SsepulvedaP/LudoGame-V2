@@ -1,6 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FManson : MonoBehaviour
 {
@@ -12,9 +13,16 @@ public class FManson : MonoBehaviour
         PressE.SetActive(false);
         canvasPuzzle.SetActive(false);
     }
+
     private void Update()
     {
-        if (Input.GetKey(KeyCode.E) && PressE.activeInHierarchy)
+        bool keyEPressed = false;
+        if (Keyboard.current != null)
+        {
+            keyEPressed = Keyboard.current.eKey.isPressed;
+        }
+
+        if (keyEPressed && PressE != null && PressE.activeInHierarchy)
         {
             Debug.Log("Puzzle");
             canvasPuzzle.SetActive(true);
@@ -22,20 +30,16 @@ public class FManson : MonoBehaviour
             mouseLocking.m_MouseLook.SetCursorLock(false);
             PressE.SetActive(false);
         }
-
     }
-
-    // Update is called once per frame
 
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("FAMILYM");
         PressE.SetActive(true);
-
     }
+
     private void OnTriggerExit(Collider other)
     {
-        
         PressE.SetActive(false);
     }
 

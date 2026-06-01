@@ -130,7 +130,7 @@ public class BartleQuestionnaireUI : MonoBehaviour
             return;
         }
 
-        firstPersonWhileQuestions = FindFirstObjectByType<FirstPersonController>();
+        firstPersonWhileQuestions = FindAnyObjectByType<FirstPersonController>();
     }
 
     /// <summary>

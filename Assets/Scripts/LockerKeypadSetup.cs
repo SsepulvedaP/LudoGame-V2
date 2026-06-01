@@ -19,7 +19,7 @@ public class LockerKeypadSetup : MonoBehaviour
 
         if (keypad == null)
         {
-            keypad = FindFirstObjectByType<Keypad>();
+            keypad = FindAnyObjectByType<Keypad>();
         }
 
         if (keypad == null || door == null)
