@@ -16,7 +16,7 @@ public class GameControl : MonoBehaviour
 
     public static bool youWin;
 
-    private const int ExpectedPieceCount = 16;
+    private const int ExpectedPieceCount = 4;
 
     void Start()
     {

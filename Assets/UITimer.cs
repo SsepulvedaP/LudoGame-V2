@@ -12,7 +12,7 @@ public class UITimer : MonoBehaviour
 
     private void Awake()
     {
-		timer = 600f;
+		timer = 1000f;
     }
     void Update()
 	{
