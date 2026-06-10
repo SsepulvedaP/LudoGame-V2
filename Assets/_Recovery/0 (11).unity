@@ -709,9 +709,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Abrir el locker
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0, type: 2}
-  m_sharedMaterial: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1101,9 +1100,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0, type: 2}
-  m_sharedMaterial: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
+  m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2521,9 +2519,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Reacomodar la foto
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0, type: 2}
-  m_sharedMaterial: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5598,9 +5595,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Abrir la caja fuerte
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0, type: 2}
-  m_sharedMaterial: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6830,7 +6826,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fb5e3b2932863ef4182f824c0f22e9b0, type: 3}
+    m_Font: {fileID: 12800000, guid: 4beb055f07aaff244873dec698d0363e, type: 3}
     m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
@@ -7057,18 +7053,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1144004716}
     m_Modifications:
-    - target: {fileID: 4597682599877428572, guid: 09c7e06b47975ff4ab4dc4800b654610,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-        type: 2}
-    - target: {fileID: 4597682599877428572, guid: 09c7e06b47975ff4ab4dc4800b654610,
-        type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-        type: 2}
     - target: {fileID: 4597682601771016229, guid: 09c7e06b47975ff4ab4dc4800b654610,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -7833,7 +7817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0.5245282, g: 0.5245282, b: 0.5245282, a: 0.3}
+  m_EffectColor: {r: 0.8, g: 0.7, b: 0.2, a: 0.3}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
 --- !u!114 &989896888
@@ -8092,9 +8076,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Recoger los libros
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0, type: 2}
-  m_sharedMaterial: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9147,9 +9130,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0, type: 2}
-  m_sharedMaterial: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10986,16 +10968,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: OBJETIVOS
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3f6c12e2bf038204880de2ab85ffdaa0, type: 2}
-  m_sharedMaterial: {fileID: 7203153118326549689, guid: 3f6c12e2bf038204880de2ab85ffdaa0,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283226610
+  m_fontColor: {r: 0.95, g: 0.85, b: 0.3, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

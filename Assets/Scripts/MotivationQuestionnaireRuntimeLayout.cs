@@ -184,6 +184,14 @@ public class MotivationQuestionnaireRuntimeLayout : MonoBehaviour
         tmp.alignment = align;
         tmp.color = Color.white;
         tmp.raycastTarget = false;
+
+        // Load Special Elite font asset from Resources if available
+        TMP_FontAsset specialElite = Resources.Load<TMP_FontAsset>("Fonts & Materials/SpecialElite SDF");
+        if (specialElite != null)
+        {
+            tmp.font = specialElite;
+        }
+
         return tmp;
     }
 
@@ -192,11 +200,11 @@ public class MotivationQuestionnaireRuntimeLayout : MonoBehaviour
         GameObject go = new GameObject($"Option_{index}", typeof(RectTransform), typeof(Image), typeof(Button));
         RectTransform rt = go.GetComponent<RectTransform>();
         rt.SetParent(parent, false);
-        rt.sizeDelta = new Vector2(0f, 56f);
+        rt.sizeDelta = new Vector2(0f, 72f);
 
         LayoutElement le = go.AddComponent<LayoutElement>();
-        le.minHeight = 56f;
-        le.preferredHeight = 56f;
+        le.minHeight = 72f;
+        le.preferredHeight = 72f;
         le.flexibleWidth = 1f;
 
         Image img = go.GetComponent<Image>();
@@ -214,11 +222,18 @@ public class MotivationQuestionnaireRuntimeLayout : MonoBehaviour
 
         TMP_Text tmp = textGo.GetComponent<TextMeshProUGUI>();
         tmp.text = placeholderLabel;
-        tmp.fontSize = 22;
+        tmp.fontSize = 24;
         tmp.alignment = TextAlignmentOptions.Left;
         tmp.color = Color.white;
-        tmp.margin = new Vector4(16f, 8f, 16f, 8f);
+        tmp.margin = new Vector4(24f, 8f, 24f, 8f);
         tmp.raycastTarget = false;
+
+        // Load Special Elite font asset from Resources if available
+        TMP_FontAsset specialElite = Resources.Load<TMP_FontAsset>("Fonts & Materials/SpecialElite SDF");
+        if (specialElite != null)
+        {
+            tmp.font = specialElite;
+        }
 
         return btn;
     }
