@@ -121,4 +121,5 @@ public class TaskManager : MonoBehaviour
     public void CompletarLlave() => CompleteTask("llave");
     public void CompletarCaja() => CompleteTask("caja");
     public void CompletarLibros() => CompleteTask("libros");
+    public void CompletarPalanca() => CompleteTask("palanca");
 }

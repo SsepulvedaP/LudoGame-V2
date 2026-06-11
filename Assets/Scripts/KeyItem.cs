@@ -15,9 +15,7 @@ public class KeyItem : MonoBehaviour
             isKeyCollected = true;
             Debug.Log("¡Llave recogida!");
             
-            if (TaskManager.Instance != null)
-                TaskManager.Instance.CompletarLlave();
-            
+            // Ya no completamos la tarea aquí, porque la tarea es abrir el locker, no tomar la llave.
             if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
             {
                 // Muestra la secuencia de preguntas y cuando termina oculta la llave

@@ -20,9 +20,12 @@ public class QuestionBox : MonoBehaviour
     [Tooltip("IDs de las preguntas de motivación en la base de datos")]
     public int[] motivationQuestionIds = new int[] { 27 };
 
+    private Collider boxCollider;
+
     void Start()
     {
         boxAnimator = GetComponent<Animator>();
+        boxCollider = GetComponent<Collider>();
     }
 
     public bool IsBoxOpen()
@@ -35,6 +38,10 @@ public class QuestionBox : MonoBehaviour
     {
         if (!isOpen)
         {
+            if (TaskManager.Instance != null)
+            {
+                TaskManager.Instance.CompletarCaja(); // 'caja' es el ID para "Abrir la caja fuerte"
+            }
             StartCoroutine(AbrirYCerrarCaja());
         }
     }
@@ -42,6 +49,10 @@ public class QuestionBox : MonoBehaviour
     IEnumerator AbrirYCerrarCaja()
     {
         isOpen = true; 
+        if (boxCollider != null)
+        {
+            boxCollider.enabled = false; // Desactivar collider para permitir interactuar con la palanca dentro
+        }
         
         if (boxAnimator != null)
         {
@@ -70,17 +81,7 @@ public class QuestionBox : MonoBehaviour
             yield return new WaitUntil(() => questionsAnswered);
         }
 
-        // 3. Permanece abierta un momento más
-        yield return new WaitForSeconds(openTime);
-
-        if (boxAnimator != null)
-        {
-            boxAnimator.speed = 1f; // Reanudar para cerrar
-        }
-
-        // 4. Terminar de cerrarse
-        yield return new WaitForSeconds(timeToFullyOpen);
-        
-        isOpen = false; 
+        // 3. ¡La caja se queda abierta permanentemente para que el jugador pueda tomar la palanca tranquilamente!
+        // No reanudamos la animación para cerrar, ni reactivamos el collider.
     }
 }

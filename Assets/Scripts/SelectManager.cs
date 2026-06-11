@@ -108,6 +108,31 @@ public class SelectManager : MonoBehaviour
             return;
         }
 
+        if (hit.distance <= selectableDistance
+            && hit.collider.GetComponentInParent<LeverCollectible>() is LeverCollectible collectible)
+        {
+            if (clickDown)
+            {
+                collectible.RecogerPalanca();
+            }
+            UpdateBagUi();
+            return;
+        }
+
+        if (hit.distance <= selectableDistance
+            && hit.collider.GetComponentInParent<LeverPuzzle>() is LeverPuzzle puzzle)
+        {
+            if (clickDown)
+            {
+                if (LeverCollectible.isLeverCollected)
+                {
+                    puzzle.ColocarPalanca();
+                }
+            }
+            UpdateBagUi();
+            return;
+        }
+
         if (keypadFocus != null && (keypadFocus.IsFocused || keypadFocus.IsKeypadUnlocked))
         {
             UpdateBagUi();
@@ -222,11 +247,7 @@ public class SelectManager : MonoBehaviour
             {
                 string itemName = gObject.name.ToLower();
                 
-                // Tarea: Obtener la llave
-                if (itemName.Contains("key") || itemName.Contains("llave"))
-                {
-                    TaskManager.Instance.CompletarLlave();
-                }
+                // La tarea 'llave' en realidad es 'Abrir el locker', así que ya no se completa al tomar la llave.
 
                 // Tarea: Recoger los libros (Verificar si ya tiene los 3)
                 int bookCount = 0;

@@ -1,0 +1,127 @@
+using UnityEngine;
+using UnityEngine.Events;
+
+public class LeverPuzzle : MonoBehaviour
+{
+    [Header("Estado del Puzzle")]
+    private bool isPlaced = false;
+
+    public bool IsPlaced => isPlaced;
+
+    [Header("Objetos de la Palanca")]
+    [Tooltip("El tubo/barra de la palanca (RMain Knob)")]
+    public GameObject leverStick;
+    
+    [Tooltip("La bolita o punta de la palanca (Sphere001)")]
+    public GameObject leverBall;
+
+    [Tooltip("El objeto de anillos o base (Rigns)")]
+    public GameObject rings;
+
+    [Header("Configuración de Posiciones y Rotaciones (Objetivo)")]
+    public Vector3 targetStickPos = new Vector3(-0.5151f, 0.0649f, 0.2216f);
+    public Vector3 targetStickRot = new Vector3(-70f, 0f, 0f);
+    
+    public Vector3 targetBallPos = new Vector3(-0.52f, 0.36f, -0.05f);
+    public Vector3 targetBallRot = new Vector3(-80f, 0f, 0f);
+
+    [Tooltip("La posición local que tomarán los anillos al activarse")]
+    public Vector3 targetRingsPos = new Vector3(-0.574f, 0.369f, -0.05f);
+
+    [Tooltip("La rotación local que tomarán los anillos al activarse")]
+    public Vector3 targetRingsRot = new Vector3(0f, -90f, -100f);
+
+    [Header("Preguntas a mostrar al colocar la palanca")]
+    [Tooltip("IDs de las preguntas de motivación que salen al colocar la palanca")]
+    public int[] motivationQuestionIds = new int[] { };
+
+    [Header("Objetos a Activar/Desactivar al Colocar")]
+    [Tooltip("Objetos que se activarán automáticamente al colocar la palanca")]
+    public GameObject[] objectsToActivate;
+
+    [Tooltip("Objetos que se desactivarán automáticamente al colocar la palanca")]
+    public GameObject[] objectsToDeactivate;
+
+    [Header("Eventos")]
+    public UnityEvent onLeverPlaced;
+
+    void Start()
+    {
+        // Al iniciar el juego, si la palanca no se ha colocado, ocultamos la palanca y su bolita
+        if (!isPlaced)
+        {
+            if (leverStick != null) leverStick.SetActive(false);
+            if (leverBall != null) leverBall.SetActive(false);
+        }
+    }
+
+    public void ColocarPalanca()
+    {
+        if (isPlaced) return;
+
+        isPlaced = true;
+        Debug.Log("¡Palanca colocada en el mecanismo!");
+
+        // Activamos y posicionamos los objetos de acuerdo a las especificaciones
+        if (leverStick != null)
+        {
+            leverStick.SetActive(true);
+            leverStick.transform.localPosition = targetStickPos;
+            leverStick.transform.localEulerAngles = targetStickRot;
+        }
+
+        if (leverBall != null)
+        {
+            leverBall.SetActive(true);
+            leverBall.transform.localPosition = targetBallPos;
+            leverBall.transform.localEulerAngles = targetBallRot;
+        }
+
+        if (rings != null)
+        {
+            rings.transform.localPosition = targetRingsPos;
+            rings.transform.localEulerAngles = targetRingsRot;
+        }
+
+        // Activar objetos adicionales configurados
+        if (objectsToActivate != null)
+        {
+            foreach (GameObject obj in objectsToActivate)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(true);
+                    Debug.Log($"[LeverPuzzle] Activando objeto adicional: {obj.name}");
+                }
+            }
+        }
+
+        // Desactivar objetos adicionales configurados
+        if (objectsToDeactivate != null)
+        {
+            foreach (GameObject obj in objectsToDeactivate)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(false);
+                    Debug.Log($"[LeverPuzzle] Desactivando objeto adicional: {obj.name}");
+                }
+            }
+        }
+
+        // Completamos la tarea de la palanca en el TaskManager
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.CompletarPalanca();
+        }
+
+        // Ejecutar evento opcional
+        onLeverPlaced?.Invoke();
+
+        // Mostrar preguntas de motivación si las hay
+        if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
+        {
+            MotivationInGameUI.Instance.ShowQuestions(motivationQuestionIds, null);
+        }
+    }
+}

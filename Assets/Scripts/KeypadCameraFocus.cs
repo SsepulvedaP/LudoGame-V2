@@ -131,7 +131,9 @@ public class KeypadCameraFocus : MonoBehaviour
         _selectManager?.SetKeypadInteractionEnabled(false);
         
         if (TaskManager.Instance != null)
-            TaskManager.Instance.CompletarCaja();
+        {
+            TaskManager.Instance.CompletarLlave(); // llave es el ID para "Abrir el locker"
+        }
 
         if (_unlockRoutine != null)
         {

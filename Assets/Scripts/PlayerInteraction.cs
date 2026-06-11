@@ -24,6 +24,9 @@ public class PlayerInteraction : MonoBehaviour
         hoverText = ""; // Reseteamos el texto en cada frame
 
         if (cam == null) return;
+        
+        // NO procesar interacciones si el juego está pausado (ej. cuestionario abierto)
+        if (Time.timeScale == 0f) return;
 
         // Lanzamos un rayo hacia el frente desde el centro de la pantalla (mirada del jugador)
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
@@ -62,6 +65,37 @@ public class PlayerInteraction : MonoBehaviour
                     else
                     {
                         hoverText = "[ Necesitas la Llave ]";
+                    }
+                }
+            }
+            // ¿Estamos mirando la palanca coleccionable?
+            else if (hit.collider.GetComponentInParent<LeverCollectible>() is LeverCollectible collectible)
+            {
+                if (!LeverCollectible.isLeverCollected)
+                {
+                    hoverText = "[ Presiona 'E' para tomar Palanca ]";
+                    if (keyEPressedThisFrame)
+                    {
+                        collectible.RecogerPalanca();
+                    }
+                }
+            }
+            // ¿Estamos mirando el mecanismo de la palanca?
+            else if (hit.collider.GetComponentInParent<LeverPuzzle>() is LeverPuzzle puzzle)
+            {
+                if (!puzzle.IsPlaced)
+                {
+                    if (LeverCollectible.isLeverCollected)
+                    {
+                        hoverText = "[ Presiona 'E' para colocar la Palanca ]";
+                        if (keyEPressedThisFrame)
+                        {
+                            puzzle.ColocarPalanca();
+                        }
+                    }
+                    else
+                    {
+                        hoverText = "[ Necesitas la Palanca ]";
                     }
                 }
             }
