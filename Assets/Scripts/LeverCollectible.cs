@@ -39,22 +39,15 @@ public class LeverCollectible : MonoBehaviour
             isLeverCollected = true;
             Debug.Log("¡Palanca recogida!");
 
-            // Marcar la tarea en el checklist
-            if (TaskManager.Instance != null)
+            // No completamos la tarea de la palanca aquí, sino en LeverPuzzle.cs
+            
+            // Aquí mostramos el siguiente bloque de preguntas, que corresponde al finalizar la caja
+            if (GlobalQuizManager.Instance != null)
             {
-                TaskManager.Instance.CompletarPalanca();
+                GlobalQuizManager.Instance.ShowNextChunk();
             }
-
-            if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
-            {
-                MotivationInGameUI.Instance.ShowQuestions(motivationQuestionIds, () => {
-                    OcultarPalanca();
-                });
-            }
-            else
-            {
-                OcultarPalanca();
-            }
+            
+            OcultarPalanca();
         }
     }
 

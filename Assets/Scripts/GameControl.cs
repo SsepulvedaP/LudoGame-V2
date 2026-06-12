@@ -62,7 +62,7 @@ public class GameControl : MonoBehaviour
             TaskManager.Instance.CompletarCuadro();
         }
 
-        bool showBartle = bartlePanelRoot != null || bartleQuestionnaire != null;
+        bool showBartle = true; // Forzamos a que muestre el quiz global
         if (showBartle)
         {
             if (winText != null)
@@ -70,39 +70,14 @@ public class GameControl : MonoBehaviour
                 winText.SetActive(false);
             }
 
-            if (bartlePanelRoot != null)
+            if (GlobalQuizManager.Instance != null)
             {
-                bartlePanelRoot.SetActive(true);
-            }
-            else if (bartleQuestionnaire != null)
-            {
-                bartleQuestionnaire.gameObject.SetActive(true);
-            }
-
-            if (bartleQuestionnaire != null)
-            {
-                bartleQuestionnaire.BeginQuestionnaire();
+                GlobalQuizManager.Instance.ShowNextChunk();
             }
         }
         else if (winText != null)
         {
             winText.SetActive(true);
-        }
-
-        // Con cuestionario Bartle: el cursor debe estar libre para los botones (no bloquear como en FPS).
-        if (showBartle)
-        {
-            if (mouseLocking != null && mouseLocking.m_MouseLook != null)
-            {
-                mouseLocking.m_MouseLook.SetCursorLock(false);
-            }
-
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
-        else if (mouseLocking != null && mouseLocking.m_MouseLook != null)
-        {
-            mouseLocking.m_MouseLook.SetCursorLock(true);
         }
 
         if (character != null)

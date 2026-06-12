@@ -34,21 +34,24 @@ public class QuestionBox : MonoBehaviour
     }
 
     // Ahora este método es público para que el Raycast del jugador lo pueda activar
+    private bool isOpening = false;
+
     public void AbrirCaja()
     {
-        if (!isOpen)
+        if (!isOpen && !isOpening)
         {
             if (TaskManager.Instance != null)
             {
                 TaskManager.Instance.CompletarCaja(); // 'caja' es el ID para "Abrir la caja fuerte"
             }
+
             StartCoroutine(AbrirYCerrarCaja());
         }
     }
 
     IEnumerator AbrirYCerrarCaja()
     {
-        isOpen = true; 
+        isOpening = true; 
         if (boxCollider != null)
         {
             boxCollider.enabled = false; // Desactivar collider para permitir interactuar con la palanca dentro
@@ -68,18 +71,11 @@ public class QuestionBox : MonoBehaviour
             boxAnimator.speed = 0f; // Pausar la animación cuando está abierta
         }
 
-        // 2. Apenas termina de abrirse, mostramos la pregunta de motivación
-        if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
-        {
-            bool questionsAnswered = false;
-            
-            // Pausar el flujo hasta que el jugador responda
-            MotivationInGameUI.Instance.ShowQuestions(motivationQuestionIds, () => {
-                questionsAnswered = true;
-            });
-            
-            yield return new WaitUntil(() => questionsAnswered);
-        }
+        // 2. Apenas termina de abrirse, quitamos la pausa (si la hubiese) o marcamos que ya está abierta.
+        isOpening = false;
+        isOpen = true; 
+        // Las preguntas ya fueron llamadas al iniciar el método.
+
 
         // 3. ¡La caja se queda abierta permanentemente para que el jugador pueda tomar la palanca tranquilamente!
         // No reanudamos la animación para cerrar, ni reactivamos el collider.

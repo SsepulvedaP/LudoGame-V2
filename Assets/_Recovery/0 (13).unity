@@ -14154,53 +14154,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2038090649}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2039668070
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2039668072}
-  - component: {fileID: 2039668071}
-  m_Layer: 0
-  m_Name: QuizManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2039668071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2039668070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e62a48d5199fde479328e985c1171b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GlobalQuizManager
-  baseUrl: https://ludo-api-48780a3730ba.herokuapp.com/api
-  coronaSprite: {fileID: 609122167, guid: a1d37945a69bff846850095f63e05169, type: 3}
-  mazmorraSprite: {fileID: -560770388, guid: 790d5b1efa62b3f47b4022c55cacee60, type: 3}
---- !u!4 &2039668072
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2039668070}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.49086, y: 1.05527, z: -12.13843}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2060594497
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15497,4 +15450,3 @@ SceneRoots:
   - {fileID: 377846734}
   - {fileID: 2094519975}
   - {fileID: 1120694247}
-  - {fileID: 2039668072}

@@ -77,11 +77,13 @@ public class SelectManager : MonoBehaviour
         // Detectar si el usuario presionó o mantiene presionado el botón de interacción (Clic izquierdo/Gamepad/Touch)
         bool clickDown = (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
-            || (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame);
+            || (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+            || (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame);
 
         bool clickHeld = (Mouse.current != null && Mouse.current.leftButton.isPressed)
             || (Gamepad.current != null && Gamepad.current.buttonSouth.isPressed)
-            || (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed);
+            || (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+            || (Keyboard.current != null && Keyboard.current.eKey.isPressed);
 
         if (interactWithKeypad
             && hit.distance <= keypadDistance
@@ -133,7 +135,7 @@ public class SelectManager : MonoBehaviour
             return;
         }
 
-        if (keypadFocus != null && (keypadFocus.IsFocused || keypadFocus.IsKeypadUnlocked))
+        if (keypadFocus != null && keypadFocus.IsFocused)
         {
             UpdateBagUi();
             return;
@@ -263,6 +265,10 @@ public class SelectManager : MonoBehaviour
                 if (bookCount >= 3)
                 {
                     TaskManager.Instance.CompletarLibros();
+                    if (GlobalQuizManager.Instance != null)
+                    {
+                        GlobalQuizManager.Instance.ShowNextChunk();
+                    }
                 }
             }
         }

@@ -16,17 +16,14 @@ public class KeyItem : MonoBehaviour
             Debug.Log("¡Llave recogida!");
             
             // Ya no completamos la tarea aquí, porque la tarea es abrir el locker, no tomar la llave.
-            if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
+            
+            // Mostrar preguntas del GlobalQuizManager al recoger la llave
+            if (GlobalQuizManager.Instance != null)
             {
-                // Muestra la secuencia de preguntas y cuando termina oculta la llave
-                MotivationInGameUI.Instance.ShowQuestions(motivationQuestionIds, () => {
-                    gameObject.SetActive(false); 
-                });
+                GlobalQuizManager.Instance.ShowNextChunk();
             }
-            else
-            {
-                gameObject.SetActive(false); // Ocultar llave directamente si no hay UI
-            }
+
+            gameObject.SetActive(false); // Ocultar llave directamente
         }
     }
 }

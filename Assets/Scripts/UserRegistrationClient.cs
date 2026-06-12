@@ -154,6 +154,13 @@ public class UserRegistrationClient : MonoBehaviour
         string wrappedJson = "{\"items\":" + request.downloadHandler.text + "}";
         CountryApiList response = JsonUtility.FromJson<CountryApiList>(wrappedJson);
 
+        if (response == null || response.items == null)
+        {
+            Debug.LogWarning("[UserRegistrationClient] La respuesta de países no es válida, cargando países por defecto.");
+            LoadFallbackCountries();
+            yield break;
+        }
+
         dropdownCountry.ClearOptions();
         countryValues.Clear();
 
@@ -337,8 +344,7 @@ public class UserRegistrationClient : MonoBehaviour
             "Nicaragua",
             "RepublicaDominicana",
             "Haiti",
-            "PuertoRico",
-            "NotDefined"
+            "PuertoRico"
         });
 
         countryValues.AddRange(new List<string>
@@ -365,8 +371,7 @@ public class UserRegistrationClient : MonoBehaviour
             "Nicaragua",
             "RepublicaDominicana",
             "Haiti",
-            "PuertoRico",
-            "NotDefined"
+            "PuertoRico"
         });
 
     }

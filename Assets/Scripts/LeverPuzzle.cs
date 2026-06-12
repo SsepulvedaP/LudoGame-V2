@@ -62,20 +62,14 @@ public class LeverPuzzle : MonoBehaviour
         isPlaced = true;
         Debug.Log("¡Palanca colocada en el mecanismo!");
 
-        // Activamos y posicionamos los objetos de acuerdo a las especificaciones
-        if (leverStick != null)
-        {
-            leverStick.SetActive(true);
-            leverStick.transform.localPosition = targetStickPos;
-            leverStick.transform.localEulerAngles = targetStickRot;
-        }
+        StartCoroutine(AnimateLeverPlacement());
+    }
 
-        if (leverBall != null)
-        {
-            leverBall.SetActive(true);
-            leverBall.transform.localPosition = targetBallPos;
-            leverBall.transform.localEulerAngles = targetBallRot;
-        }
+    private System.Collections.IEnumerator AnimateLeverPlacement()
+    {
+        // Activamos los objetos
+        if (leverStick != null) leverStick.SetActive(true);
+        if (leverBall != null) leverBall.SetActive(true);
 
         if (rings != null)
         {
@@ -83,16 +77,24 @@ public class LeverPuzzle : MonoBehaviour
             rings.transform.localEulerAngles = targetRingsRot;
         }
 
+        // Posicionamos la palanca y la bolita, pero con rotación en 0 (hacia arriba)
+        if (leverStick != null)
+        {
+            leverStick.transform.localPosition = targetStickPos;
+            leverStick.transform.localEulerAngles = Vector3.zero;
+        }
+        if (leverBall != null)
+        {
+            leverBall.transform.localPosition = targetBallPos;
+            leverBall.transform.localEulerAngles = Vector3.zero;
+        }
+
         // Activar objetos adicionales configurados
         if (objectsToActivate != null)
         {
             foreach (GameObject obj in objectsToActivate)
             {
-                if (obj != null)
-                {
-                    obj.SetActive(true);
-                    Debug.Log($"[LeverPuzzle] Activando objeto adicional: {obj.name}");
-                }
+                if (obj != null) obj.SetActive(true);
             }
         }
 
@@ -101,13 +103,30 @@ public class LeverPuzzle : MonoBehaviour
         {
             foreach (GameObject obj in objectsToDeactivate)
             {
-                if (obj != null)
-                {
-                    obj.SetActive(false);
-                    Debug.Log($"[LeverPuzzle] Desactivando objeto adicional: {obj.name}");
-                }
+                if (obj != null) obj.SetActive(false);
             }
         }
+
+        // Animación suave de 1.2 segundos
+        float duration = 1.2f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / duration);
+
+            // Usamos SmoothStep para un movimiento más natural
+            float t = Mathf.SmoothStep(0f, 1f, progress);
+
+            if (leverStick != null) leverStick.transform.localEulerAngles = Vector3.Lerp(Vector3.zero, targetStickRot, t);
+            if (leverBall != null) leverBall.transform.localEulerAngles = Vector3.Lerp(Vector3.zero, targetBallRot, t);
+
+            yield return null;
+        }
+
+        // Aseguramos los valores finales
+        if (leverStick != null) leverStick.transform.localEulerAngles = targetStickRot;
+        if (leverBall != null) leverBall.transform.localEulerAngles = targetBallRot;
 
         // Completamos la tarea de la palanca en el TaskManager
         if (TaskManager.Instance != null)
@@ -118,10 +137,10 @@ public class LeverPuzzle : MonoBehaviour
         // Ejecutar evento opcional
         onLeverPlaced?.Invoke();
 
-        // Mostrar preguntas de motivación si las hay
-        if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
+        // Mostrar preguntas de motivación (ahora a través de GlobalQuizManager)
+        if (GlobalQuizManager.Instance != null)
         {
-            MotivationInGameUI.Instance.ShowQuestions(motivationQuestionIds, null);
+            GlobalQuizManager.Instance.ShowNextChunk();
         }
     }
 }
