@@ -20,6 +20,11 @@ public class BreakerBoxManager : MonoBehaviour
 
     void Start()
     {
+        if (gameObject.GetComponent<InteractableHighlighter>() == null)
+        {
+            gameObject.AddComponent<InteractableHighlighter>();
+        }
+
         // Encuentra todos los interruptores que sean hijos de este objeto
         allSwitches = GetComponentsInChildren<BreakerSwitch>();
     }
@@ -60,7 +65,7 @@ public class BreakerBoxManager : MonoBehaviour
     private void SolvePuzzle()
     {
         isSolved = true;
-        Debug.Log("¡Puzzle de la caja eléctrica resuelto!");
+        // Debug.Log("¡Puzzle de la caja eléctrica resuelto!");
 
         OnAccessGranted?.Invoke();
         onPuzzleSolved?.Invoke();

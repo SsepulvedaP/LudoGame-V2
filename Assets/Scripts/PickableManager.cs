@@ -29,6 +29,14 @@ public class PickableManager : MonoBehaviour
         set => sprite = value;
     }
 
+    private void Start()
+    {
+        if (gameObject.GetComponent<InteractableHighlighter>() == null)
+        {
+            gameObject.AddComponent<InteractableHighlighter>();
+        }
+    }
+
     public void IsPickable()
     {
         if (pickable == true && InventorySize() < 3)

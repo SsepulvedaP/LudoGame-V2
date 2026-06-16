@@ -424,8 +424,8 @@ public class UserRegistrationClient : MonoBehaviour
         string json = JsonUtility.ToJson(body);
         string positionsUrl = $"{baseUrl}/positions/";
 
-        Debug.Log("[UserRegistrationClient] Creando área en: " + positionsUrl);
-        Debug.Log("[UserRegistrationClient] Payload área: " + json);
+        // Debug.Log("[UserRegistrationClient] Creando área en: " + positionsUrl);
+        // Debug.Log("[UserRegistrationClient] Payload área: " + json);
 
         using UnityWebRequest request = new UnityWebRequest(positionsUrl, "POST");
         byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
@@ -436,8 +436,8 @@ public class UserRegistrationClient : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        Debug.Log("[UserRegistrationClient] Crear área HTTP " + request.responseCode);
-        Debug.Log("[UserRegistrationClient] Crear área response body: " + request.downloadHandler.text);
+        // Debug.Log("[UserRegistrationClient] Crear área HTTP " + request.responseCode);
+        // Debug.Log("[UserRegistrationClient] Crear área response body: " + request.downloadHandler.text);
 
         if (request.result != UnityWebRequest.Result.Success)
         {
@@ -501,12 +501,12 @@ public class UserRegistrationClient : MonoBehaviour
         string json = JsonUtility.ToJson(body);
         string usersUrl = $"{baseUrl}/users/";
 
-        Debug.Log("[UserRegistrationClient] Registrando usuario en: " + usersUrl);
-        Debug.Log("[UserRegistrationClient] Área enviada al backend: " + selectedArea);
-        Debug.Log("[UserRegistrationClient] País seleccionado UI: " + dropdownCountry.options[dropdownCountry.value].text);
-        Debug.Log("[UserRegistrationClient] País enviado al backend: " + selectedCountry);
-        Debug.Log("[UserRegistrationClient] AreaId enviado como positionId: " + areaId);
-        Debug.Log("[UserRegistrationClient] Payload: " + json);
+        // Debug.Log("[UserRegistrationClient] Registrando usuario en: " + usersUrl);
+        // Debug.Log("[UserRegistrationClient] Área enviada al backend: " + selectedArea);
+        // Debug.Log("[UserRegistrationClient] País seleccionado UI: " + dropdownCountry.options[dropdownCountry.value].text);
+        // Debug.Log("[UserRegistrationClient] País enviado al backend: " + selectedCountry);
+        // Debug.Log("[UserRegistrationClient] AreaId enviado como positionId: " + areaId);
+        // Debug.Log("[UserRegistrationClient] Payload: " + json);
 
         using UnityWebRequest request = new UnityWebRequest(usersUrl, "POST");
         byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
@@ -517,8 +517,8 @@ public class UserRegistrationClient : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-        Debug.Log("[UserRegistrationClient] Registro HTTP " + request.responseCode);
-        Debug.Log("[UserRegistrationClient] Registro response body: " + request.downloadHandler.text);
+        // Debug.Log("[UserRegistrationClient] Registro HTTP " + request.responseCode);
+        // Debug.Log("[UserRegistrationClient] Registro response body: " + request.downloadHandler.text);
 
         if (request.result != UnityWebRequest.Result.Success)
         {
@@ -526,13 +526,13 @@ public class UserRegistrationClient : MonoBehaviour
             yield break;
         }
 
-        Debug.Log("[UserRegistrationClient] Usuario registrado correctamente.");
+        // Debug.Log("[UserRegistrationClient] Usuario registrado correctamente.");
 
         CreateUserResponse created = JsonUtility.FromJson<CreateUserResponse>(request.downloadHandler.text);
         if (created != null && created.id > 0)
         {
             UserSession.Save(created.id, created.token, created.name);
-            Debug.Log("[UserRegistrationClient] user_id guardado en sesión: " + created.id);
+            // Debug.Log("[UserRegistrationClient] user_id guardado en sesión: " + created.id);
         }
         else
         {

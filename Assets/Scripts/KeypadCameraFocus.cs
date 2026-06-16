@@ -95,6 +95,10 @@ public class KeypadCameraFocus : MonoBehaviour
 
         if (keypad != null)
         {
+            if (keypad.gameObject.GetComponent<InteractableHighlighter>() == null)
+            {
+                keypad.gameObject.AddComponent<InteractableHighlighter>();
+            }
             keypad.OnAccessGranted.AddListener(OnKeypadAccessGranted);
         }
     }

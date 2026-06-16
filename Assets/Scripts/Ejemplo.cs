@@ -16,7 +16,7 @@ public class Ejemplo : MonoBehaviour
     {
         if (KeyItem.isKeyCollected && !isOpen)
         {
-            Debug.Log("¡Abriendo la caja con la llave!");
+            // Debug.Log("¡Abriendo la caja con la llave!");
             
             if (boxAnimator != null)
             {
@@ -27,7 +27,7 @@ public class Ejemplo : MonoBehaviour
         }
         else if (!KeyItem.isKeyCollected)
         {
-            Debug.Log("Está cerrada. Necesitas encontrar la llave primero.");
+            // Debug.Log("Está cerrada. Necesitas encontrar la llave primero.");
         }
     }
 }

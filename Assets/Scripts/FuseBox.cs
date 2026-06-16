@@ -37,7 +37,7 @@ public class FuseBox : MonoBehaviour
     IEnumerator RepairRoutine()
     {
         isRepaired = true;
-        Debug.Log("Caja reparada");
+        // Debug.Log("Caja reparada");
 
         if (placedFuseVisual != null)
         {

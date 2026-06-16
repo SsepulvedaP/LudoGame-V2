@@ -24,7 +24,7 @@ public class LockerKeypadSetup : MonoBehaviour
 
         if (keypad == null || door == null)
         {
-            Debug.LogWarning("LockerKeypadSetup: falta Keypad o LockerDoor en la escena.", this);
+            // Debug.LogWarning("LockerKeypadSetup: falta Keypad o LockerDoor en la escena.", this);
             return;
         }
 

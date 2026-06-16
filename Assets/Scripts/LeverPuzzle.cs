@@ -47,6 +47,11 @@ public class LeverPuzzle : MonoBehaviour
 
     void Start()
     {
+        if (gameObject.GetComponent<InteractableHighlighter>() == null)
+        {
+            gameObject.AddComponent<InteractableHighlighter>();
+        }
+
         // Al iniciar el juego, si la palanca no se ha colocado, ocultamos la palanca y su bolita
         if (!isPlaced)
         {
@@ -60,7 +65,7 @@ public class LeverPuzzle : MonoBehaviour
         if (isPlaced) return;
 
         isPlaced = true;
-        Debug.Log("¡Palanca colocada en el mecanismo!");
+        // Debug.Log("¡Palanca colocada en el mecanismo!");
 
         StartCoroutine(AnimateLeverPlacement());
     }

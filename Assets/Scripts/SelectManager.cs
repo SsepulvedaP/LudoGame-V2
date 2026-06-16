@@ -71,7 +71,7 @@ public class SelectManager : MonoBehaviour
         if (hit.transform != _lastHitTransform)
         {
             _lastHitTransform = hit.transform;
-            Debug.Log($"[SelectManager] Apuntando a: {hit.transform.name} (Distancia: {hit.distance:F2}m)");
+            // Debug.Log($"[SelectManager] Apuntando a: {hit.transform.name} (Distancia: {hit.distance:F2}m)");
         }
 
         // Detectar si el usuario presionó o mantiene presionado el botón de interacción (Clic izquierdo/Gamepad/Touch)
@@ -171,7 +171,7 @@ public class SelectManager : MonoBehaviour
             {
                 if (Time.frameCount % 30 == 0) // Loggear cada 30 frames para no spamear
                 {
-                    Debug.LogWarning($"[SelectManager] Apuntando a '{hit.transform.name}' pero está muy lejos: {hit.distance:F2}m (Límite: {selectableDistance:F2}m). Acércate más o aumenta 'Selectable Distance' en el Inspector.");
+                    // Debug.LogWarning($"[SelectManager] Apuntando a '{hit.transform.name}' pero está muy lejos: {hit.distance:F2}m (Límite: {selectableDistance:F2}m). Acércate más o aumenta 'Selectable Distance' en el Inspector.");
                 }
             }
         }

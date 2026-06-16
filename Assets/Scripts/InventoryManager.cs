@@ -55,7 +55,7 @@ public class InventoryManager : MonoBehaviour
                 {
                     if (bag[i] != null)
                     {
-                        Debug.Log(bag[i].name);
+                        // Debug.Log(bag[i].name);
                     }
                 }
             }

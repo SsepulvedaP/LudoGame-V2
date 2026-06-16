@@ -61,13 +61,13 @@ public class TaskManager : MonoBehaviour
 
     public void CompleteTask(string taskId)
     {
-        Debug.Log($"[TaskManager] Intentando completar tarea: {taskId}");
+        // Debug.Log($"[TaskManager] Intentando completar tarea: {taskId}");
         foreach (var task in tasks)
         {
             if (task.id == taskId && !task.isCompleted)
             {
                 task.isCompleted = true;
-                Debug.Log($"[TaskManager] ¡Tarea '{taskId}' completada con éxito!");
+                // Debug.Log($"[TaskManager] ¡Tarea '{taskId}' completada con éxito!");
                 
                 // Dispara la animación de completar
                 StartCoroutine(AnimateTaskCompletion(task));

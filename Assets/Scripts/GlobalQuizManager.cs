@@ -73,8 +73,34 @@ public class GlobalQuizManager : MonoBehaviour
     private Button _continueButton;
     private int _summaryState = 0; // 0=Bartle, 1=Motivation, 2=Memory
     private BartleSummaryOut _bartleSummaryData;
+    private string _finalDomBartle = "(Sin respuestas)";
+    private string _finalDomMot = "Indefinido";
+    private string _finalMemLevel = "Estandar";
+    private bool _resultsSaved = false;
 
     private FirstPersonController _fpsController;
+
+    [Serializable]
+    public class GeneralResponseSubmit
+    {
+        public int userId;
+        public string response;
+        public float averageResponse;
+    }
+
+    [Serializable]
+    public class VAKResponseSubmit
+    {
+        public int userId;
+        public string vakresponse;
+    }
+
+    [Serializable]
+    public class MemoryResponseSubmit
+    {
+        public int userId;
+        public string memoryresponse;
+    }
 
     private void Awake()
     {
@@ -277,7 +303,7 @@ public class GlobalQuizManager : MonoBehaviour
 
         if (_currentChunkIndex >= _chunks.Count)
         {
-            Debug.Log("[GlobalQuizManager] Ya no hay más bloques.");
+            // Debug.Log("[GlobalQuizManager] Ya no hay más bloques.");
             return;
         }
 
@@ -432,6 +458,39 @@ public class GlobalQuizManager : MonoBehaviour
         return req;
     }
 
+    private IEnumerator PostFinalResults(int userId, string domBartle, string domMot, string memLevel)
+    {
+        // 1. Guardar Memoria (MemoryResponse)
+        string memUrl = $"{baseUrl.TrimEnd('/')}/responses/memory";
+        var memBody = new MemoryResponseSubmit { userId = userId, memoryresponse = memLevel };
+        using (UnityWebRequest reqMem = CreatePostRequest(memUrl, memBody))
+        {
+            yield return reqMem.SendWebRequest();
+            if (reqMem.result != UnityWebRequest.Result.Success) 
+                Debug.LogError("Error POST Memory: " + reqMem.error);
+        }
+
+        // 2. Guardar Motivación Ludo+ (VAKResponse)
+        string vakUrl = $"{baseUrl.TrimEnd('/')}/responses/vak";
+        var vakBody = new VAKResponseSubmit { userId = userId, vakresponse = domMot };
+        using (UnityWebRequest reqVak = CreatePostRequest(vakUrl, vakBody))
+        {
+            yield return reqVak.SendWebRequest();
+            if (reqVak.result != UnityWebRequest.Result.Success) 
+                Debug.LogError("Error POST VAK (Motivacion): " + reqVak.error);
+        }
+
+        // 3. Guardar Perfil Bartle (General Response)
+        string resUrl = $"{baseUrl.TrimEnd('/')}/responses/";
+        var resBody = new GeneralResponseSubmit { userId = userId, response = domBartle, averageResponse = 0f };
+        using (UnityWebRequest reqRes = CreatePostRequest(resUrl, resBody))
+        {
+            yield return reqRes.SendWebRequest();
+            if (reqRes.result != UnityWebRequest.Result.Success) 
+                Debug.LogError("Error POST General Response (Bartle): " + reqRes.error);
+        }
+    }
+
     // --- Secuencia de Resumen Final ---
 
     private IEnumerator ShowSummarySequence()
@@ -456,6 +515,24 @@ public class GlobalQuizManager : MonoBehaviour
             }
         }
 
+        // Calcular resultados finales aquí antes de mostrar UI
+        _finalDomBartle = _bartleSummaryData != null && !string.IsNullOrEmpty(_bartleSummaryData.dominant_type) ? _bartleSummaryData.dominant_type : "(Sin respuestas)";
+
+        if (_scoreE >= _scoreL && _scoreE >= _scoreA) _finalDomMot = "Aprendiz Explorador (Autónomo)";
+        else if (_scoreL > _scoreE && _scoreL >= _scoreA) _finalDomMot = "Aprendiz Orientado a Logro (Controlado)";
+        else _finalDomMot = "Aprendiz por Activar (Desmotivado)";
+
+        if (_memoryScore >= 5) _finalMemLevel = "Avanzada";
+        else if (_memoryScore >= 3) _finalMemLevel = "Buena";
+        else _finalMemLevel = "Estandar";
+
+        // Lanzar el guardado de forma asíncrona sin bloquear la UI
+        if (!_resultsSaved)
+        {
+            _resultsSaved = true;
+            StartCoroutine(PostFinalResults(userId, _finalDomBartle, _finalDomMot, _finalMemLevel));
+        }
+
         RenderSummaryState();
     }
 
@@ -466,8 +543,7 @@ public class GlobalQuizManager : MonoBehaviour
         if (_summaryState == 0)
         {
             // Bartle
-            string dom = _bartleSummaryData != null && !string.IsNullOrEmpty(_bartleSummaryData.dominant_type) ? _bartleSummaryData.dominant_type : "(Sin respuestas)";
-            _summaryTitleText.text = $"Perfil Bartle: {dom}";
+            _summaryTitleText.text = $"Perfil Bartle: {_finalDomBartle}";
             
             if (_bartleSummaryData != null && _bartleSummaryData.counts != null)
             {
@@ -485,12 +561,7 @@ public class GlobalQuizManager : MonoBehaviour
         else if (_summaryState == 1)
         {
             // Motivación Ludo+
-            string domMot = "Indefinido";
-            if (_scoreE >= _scoreL && _scoreE >= _scoreA) domMot = "Aprendiz Explorador (Autónomo)";
-            else if (_scoreL > _scoreE && _scoreL >= _scoreA) domMot = "Aprendiz Orientado a Logro (Controlado)";
-            else domMot = "Aprendiz por Activar (Desmotivado)";
-
-            _summaryTitleText.text = $"Perfil Ludo+: {domMot}";
+            _summaryTitleText.text = $"Perfil Ludo+: {_finalDomMot}";
             _summaryDetailsText.text = $"Tus Respuestas:\nExplorador (E): {_scoreE}\nOrientado a Logro (L): {_scoreL}\nPor Activar (A): {_scoreA}";
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Siguiente";
@@ -499,11 +570,7 @@ public class GlobalQuizManager : MonoBehaviour
         else if (_summaryState == 2)
         {
             // Memoria
-            string level = "Estandar";
-            if (_memoryScore >= 5) level = "Avanzada";
-            else if (_memoryScore >= 3) level = "Buena";
-
-            _summaryTitleText.text = $"Nivel de Memoria: {level}";
+            _summaryTitleText.text = $"Nivel de Memoria: {_finalMemLevel}";
             _summaryDetailsText.text = $"Puntuación: {_memoryScore} de 6 respuestas correctas.";
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Finalizar";

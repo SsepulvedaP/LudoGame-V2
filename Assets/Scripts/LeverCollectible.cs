@@ -15,6 +15,10 @@ public class LeverCollectible : MonoBehaviour
     private void Start()
     {
         myCollider = GetComponent<Collider>();
+        if (gameObject.GetComponent<InteractableHighlighter>() == null)
+        {
+            gameObject.AddComponent<InteractableHighlighter>();
+        }
     }
 
     private void Update()
@@ -32,12 +36,12 @@ public class LeverCollectible : MonoBehaviour
         {
             if (parentBox != null && !parentBox.IsBoxOpen())
             {
-                Debug.LogWarning("No se puede recoger la palanca si la caja está cerrada.");
+                // Debug.LogWarning("No se puede recoger la palanca si la caja está cerrada.");
                 return;
             }
 
             isLeverCollected = true;
-            Debug.Log("¡Palanca recogida!");
+            // Debug.Log("¡Palanca recogida!");
 
             // No completamos la tarea de la palanca aquí, sino en LeverPuzzle.cs
             

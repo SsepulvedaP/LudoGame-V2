@@ -13,7 +13,7 @@ public class KeyItem : MonoBehaviour
         if (!isKeyCollected)
         {
             isKeyCollected = true;
-            Debug.Log("¡Llave recogida!");
+            // Debug.Log("¡Llave recogida!");
             
             // Ya no completamos la tarea aquí, porque la tarea es abrir el locker, no tomar la llave.
             

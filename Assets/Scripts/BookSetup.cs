@@ -22,7 +22,7 @@ public class BookSetup : MonoBehaviour
         SelectManager selector = FindFirstObjectByType<SelectManager>();
         if (selector == null)
         {
-            Debug.LogWarning("No se encontró ningún SelectManager en la escena.");
+            // Debug.LogWarning("No se encontró ningún SelectManager en la escena.");
         }
 
         int index = 0;
@@ -60,20 +60,20 @@ public class BookSetup : MonoBehaviour
                 if (bookSprites != null && index < bookSprites.Length)
                 {
                     pickable.Sprite = bookSprites[index];
-                    Debug.Log($"Libro '{child.name}' configurado con sprite: {bookSprites[index].name}");
+                    // Debug.Log($"Libro '{child.name}' configurado con sprite: {bookSprites[index].name}");
                 }
                 else
                 {
-                    Debug.LogWarning($"Libro '{child.name}' configurado SIN sprite (índice fuera de rango o array de sprites vacío).");
+                    // Debug.LogWarning($"Libro '{child.name}' configurado SIN sprite (índice fuera de rango o array de sprites vacío).");
                 }
             }
 
-            Debug.Log($"Libro '{child.name}' configurado con éxito. Tag: {child.gameObject.tag}, BoxCollider: {boxCollider != null}, PickableManager: {pickable != null}");
+            // Debug.Log($"Libro '{child.name}' configurado con éxito. Tag: {child.gameObject.tag}, BoxCollider: {boxCollider != null}, PickableManager: {pickable != null}");
 
             index++;
         }
 
-        Debug.Log($"Se configuraron {index} libros correctamente bajo {gameObject.name}.");
+        // Debug.Log($"Se configuraron {index} libros correctamente bajo {gameObject.name}.");
 
 #if UNITY_EDITOR
         if (!Application.isPlaying)

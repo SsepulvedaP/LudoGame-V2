@@ -12,7 +12,7 @@ public class FuseItem : MonoBehaviour
         if (!isFuseCollected)
         {
             isFuseCollected = true;
-            Debug.Log("¡Fusible recogido!");
+            // Debug.Log("¡Fusible recogido!");
             
             if (MotivationInGameUI.Instance != null && motivationQuestionIds != null && motivationQuestionIds.Length > 0)
             {
