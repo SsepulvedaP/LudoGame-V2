@@ -6,7 +6,7 @@ public class GameControl : MonoBehaviour
     private Transform[] pictures;
 
     [SerializeField]
-    private GameObject winText, camara, character;
+    private GameObject winText, camara, character, foto;
     [SerializeField] private UnityStandardAssets.Characters.FirstPerson.FirstPersonController mouseLocking;
 
     [Header("Tras el puzzle: cuestionario Ludo (Bartle)")]
@@ -78,6 +78,7 @@ public class GameControl : MonoBehaviour
         else if (winText != null)
         {
             winText.SetActive(true);
+           
         }
 
         if (character != null)
@@ -111,7 +112,7 @@ public class GameControl : MonoBehaviour
                 return false;
             }
         }
-
+        foto.SetActive(false);
         return true;
     }
 }
