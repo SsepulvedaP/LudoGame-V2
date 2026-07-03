@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class IntroManager : MonoBehaviour
 {
@@ -7,25 +8,44 @@ public class IntroManager : MonoBehaviour
     public GameObject panel2;
 
     [Header("Menú Principal / Registro")]
-    public GameObject menuPrincipal; // Aquí arrastrarás tu Panel_RegisterUser
+    public GameObject menuPrincipal; // Panel_RegisterUser
+
+    [Header("Escena a cargar al finalizar la intro")]
+    public string nextSceneName = "Level 1";
 
     void Start()
     {
-        // Al iniciar la escena, mostramos el primer panel y ocultamos el resto
-        if (panel1 != null) panel1.SetActive(true);
+        // Flujo: Registro → Panel1 → Panel2 → Juego
+        if (menuPrincipal != null) menuPrincipal.SetActive(true);
+        if (panel1 != null) panel1.SetActive(false);
         if (panel2 != null) panel2.SetActive(false);
-        if (menuPrincipal != null) menuPrincipal.SetActive(false);
     }
 
+    /// <summary>
+    /// Llamar este método desde el botón "Registrarse" del Panel_RegisterUser
+    /// DESPUÉS de que el registro en la API haya sido exitoso.
+    /// </summary>
+    public void OnRegistroExitoso()
+    {
+        if (menuPrincipal != null) menuPrincipal.SetActive(false);
+        if (panel1 != null) panel1.SetActive(true);
+        if (panel2 != null) panel2.SetActive(false);
+    }
+
+    /// <summary>
+    /// Llamar desde el botón "Siguiente" del Panel1
+    /// </summary>
     public void MostrarPanel2()
     {
         if (panel1 != null) panel1.SetActive(false);
         if (panel2 != null) panel2.SetActive(true);
     }
 
-    public void MostrarMenuPrincipal()
+    /// <summary>
+    /// Llamar desde el botón "Empezar" / "Continuar" del Panel2
+    /// </summary>
+    public void IrAlJuego()
     {
-        if (panel2 != null) panel2.SetActive(false);
-        if (menuPrincipal != null) menuPrincipal.SetActive(true);
+        SceneManager.LoadScene(nextSceneName);
     }
 }

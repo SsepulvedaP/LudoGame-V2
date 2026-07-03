@@ -4,18 +4,19 @@ public class InteractableHighlighter : MonoBehaviour
 {
     [Header("Highlight Settings")]
     public bool enableLight = true;
-    public Color lightColor = new Color(1f, 0.8f, 0.2f); // Dorado
+    public Color lightColor = new Color(1f, 0.9f, 0.6f); // Suavizado
     public float pulseSpeed = 4f;
     
     [Header("Light Specifics")]
     public float minIntensity = 0f;
-    public float maxIntensity = 20f;
+    public float maxIntensity = 5f;
     public float lightRange = 1.5f;
+    public Vector3 lightLocalOffset = Vector3.zero;
 
     [Header("Material Emission (Optional)")]
     public bool enableMaterialEmission = true;
     public float minEmission = 0f;
-    public float maxEmission = 0.4f;
+    public float maxEmission = 0.15f;
 
     private Light pointLight;
     private Renderer[] renderers;
@@ -56,6 +57,10 @@ public class InteractableHighlighter : MonoBehaviour
             pointLight.range = lightRange;
             pointLight.intensity = minIntensity;
             pointLight.shadows = LightShadows.None;
+            
+            // Aplicar el offset manual que el usuario puede configurar en el Inspector
+            lightObj.transform.localPosition += lightLocalOffset;
+            
             // Un pequeño offset hacia atrás por si está pegado a la pared
             lightObj.transform.position -= transform.forward * 0.2f;
         }

@@ -1179,6 +1179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UserRegistrationClient
   baseUrl: https://ludo-api-48780a3730ba.herokuapp.com/api
+  introManager: {fileID: 1815944900}
   inputName: {fileID: 1804003726}
   dropdownCountry: {fileID: 309295997}
   dropdownArea: {fileID: 123235639}
@@ -1515,7 +1516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &243257256
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9397,7 +9398,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1632832391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9929,7 +9930,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1815944900}
         m_TargetAssemblyTypeName: IntroManager, Assembly-CSharp
-        m_MethodName: MostrarMenuPrincipal
+        m_MethodName: IrAlJuego
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11181,6 +11182,7 @@ MonoBehaviour:
   panel1: {fileID: 243257255}
   panel2: {fileID: 943518384}
   menuPrincipal: {fileID: 1632832390}
+  nextSceneName: Level 1
 --- !u!4 &1815944901
 Transform:
   m_ObjectHideFlags: 0

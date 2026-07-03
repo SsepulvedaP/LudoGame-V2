@@ -13,6 +13,10 @@ public class UserRegistrationClient : MonoBehaviour
     [Header("API")]
     public string baseUrl = "https://ludo-api-48780a3730ba.herokuapp.com/api";
 
+    [Header("Flujo post-registro")]
+    [Tooltip("Referencia al IntroManager para mostrar los paneles de introducción tras registrarse. Si es null, carga la escena directamente.")]
+    public IntroManager introManager;
+
     [Header("UI")]
     public TMP_InputField inputName;
     public TMP_Dropdown dropdownCountry;
@@ -539,6 +543,16 @@ public class UserRegistrationClient : MonoBehaviour
             Debug.LogWarning("[UserRegistrationClient] La respuesta no incluyó id de usuario; Bartle/API posteriores no tendrán user_id.");
         }
 
-        SceneManager.LoadScene(nextSceneName);
+        // Si hay un IntroManager, mostrar los paneles de introducción antes de cargar la escena.
+        // El IntroManager será quien llame a SceneManager.LoadScene al final del Panel2.
+        if (introManager != null)
+        {
+            introManager.OnRegistroExitoso();
+        }
+        else
+        {
+            // Fallback: cargar la escena directamente si no hay IntroManager asignado
+            SceneManager.LoadScene(nextSceneName);
+        }
     }
 }
