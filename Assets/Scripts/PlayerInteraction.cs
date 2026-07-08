@@ -8,6 +8,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private Camera cam;
     private string hoverText = "";
+    
+    public static string GlobalHoverText = "";
+    
+    // UI elements
+    private GameObject uiCanvas;
+    private TMPro.TextMeshProUGUI interactionText;
 
     void Start()
     {
@@ -17,11 +23,52 @@ public class PlayerInteraction : MonoBehaviour
         {
             cam = GetComponentInChildren<Camera>();
         }
+        
+        SetupUI();
+    }
+
+    private void SetupUI()
+    {
+        // Crear un Canvas en runtime para los textos de interacción
+        uiCanvas = new GameObject("PlayerInteractionCanvas");
+        Canvas canvas = uiCanvas.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 100;
+        
+        UnityEngine.UI.CanvasScaler scaler = uiCanvas.AddComponent<UnityEngine.UI.CanvasScaler>();
+        scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        
+        uiCanvas.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+        
+        // Crear el objeto de texto
+        GameObject textGo = new GameObject("InteractionText");
+        textGo.transform.SetParent(uiCanvas.transform, false);
+        
+        interactionText = textGo.AddComponent<TMPro.TextMeshProUGUI>();
+        interactionText.alignment = TMPro.TextAlignmentOptions.Center;
+        interactionText.fontSize = 32;
+        interactionText.color = Color.white;
+        
+        // Centrar y posicionar un poco abajo
+        RectTransform rt = interactionText.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = new Vector2(800, 100);
+        rt.anchoredPosition = new Vector2(0, -50);
+        
+        // Cargar fuente del juego si existe
+        TMPro.TMP_FontAsset font = Resources.Load<TMPro.TMP_FontAsset>("Fonts & Materials/SpecialElite SDF");
+        if (font != null) interactionText.font = font;
+        
+        interactionText.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        hoverText = ""; // Reseteamos el texto en cada frame
+        hoverText = GlobalHoverText; // Toma el texto de otros scripts si existe
+        GlobalHoverText = ""; // Reseteamos el texto global para el siguiente frame
 
         if (cam == null) return;
         
@@ -100,20 +147,16 @@ public class PlayerInteraction : MonoBehaviour
                 }
             }
         }
-    }
 
-    // Muestra el letrero en el centro de la pantalla
-    void OnGUI()
-    {
+        // Actualizar UI en Update en lugar de OnGUI
         if (!string.IsNullOrEmpty(hoverText))
         {
-            GUIStyle style = new GUIStyle();
-            style.fontSize = 25;
-            style.normal.textColor = Color.white;
-            style.alignment = TextAnchor.MiddleCenter;
-
-            // Dibujar en el centro inferior de la pantalla
-            GUI.Label(new Rect(Screen.width / 2 - 150, Screen.height / 2 + 50, 300, 50), hoverText, style);
+            if (!interactionText.gameObject.activeSelf) interactionText.gameObject.SetActive(true);
+            interactionText.text = hoverText;
+        }
+        else
+        {
+            if (interactionText.gameObject.activeSelf) interactionText.gameObject.SetActive(false);
         }
     }
 }

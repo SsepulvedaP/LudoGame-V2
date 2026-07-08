@@ -332,9 +332,16 @@ public class KeypadCameraFocus : MonoBehaviour
 
     private void SetPromptVisible(bool visible)
     {
-        if (interactPrompt != null && interactPrompt.activeSelf != visible)
+        // Ocultar siempre el prompt flotante legacy (si existe)
+        if (interactPrompt != null && interactPrompt.activeSelf)
         {
-            interactPrompt.SetActive(visible);
+            interactPrompt.SetActive(false);
+        }
+
+        // Usar la UI estandarizada central del jugador
+        if (visible)
+        {
+            PlayerInteraction.GlobalHoverText = "[ Presiona 'E' para ver Keypad ]";
         }
     }
 

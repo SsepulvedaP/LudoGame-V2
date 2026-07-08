@@ -115,197 +115,49 @@ public class MotivationInGameUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Método simplificado para poder llamarlo desde UnityEvents en el Inspector (ej. OnAccessGranted del Keypad)
+    /// Proxy a GlobalQuizManager
     /// </summary>
     public void ShowQuestionSimple(int questionId)
     {
-        if (!gameObject.activeInHierarchy)
-        {
-            gameObject.SetActive(true);
-        }
-        
-        // Esperamos 1.5 segundos para que el Keypad cambie a verde y la cámara salga del zoom
-        StartCoroutine(WaitAndShowSimple(questionId));
+        if (GlobalQuizManager.Instance != null) GlobalQuizManager.Instance.ShowNextChunk();
     }
 
-    private IEnumerator WaitAndShowSimple(int questionId)
-    {
-        yield return new WaitForSeconds(1.5f);
-        ShowQuestion(questionId, null);
-    }
-
-    /// <summary>
-    /// Método simplificado para secuencias de preguntas, usando un string separado por comas
-    /// </summary>
     public void ShowQuestionsSimpleString(string commaSeparatedIds)
     {
-        if (!gameObject.activeInHierarchy)
-        {
-            gameObject.SetActive(true);
-        }
-        
-        StartCoroutine(WaitAndShowQuestionsSimple(commaSeparatedIds));
+        if (GlobalQuizManager.Instance != null) GlobalQuizManager.Instance.ShowNextChunk();
     }
 
-    private IEnumerator WaitAndShowQuestionsSimple(string commaSeparatedIds)
-    {
-        yield return new WaitForSeconds(1.5f);
-        
-        string[] parts = commaSeparatedIds.Split(',');
-        List<int> ids = new List<int>();
-        foreach (string part in parts)
-        {
-            if (int.TryParse(part.Trim(), out int id))
-            {
-                ids.Add(id);
-            }
-        }
-        
-        ShowQuestions(ids.ToArray(), null);
-    }
-
-    /// <summary>
-    /// Muestra una secuencia de preguntas una tras otra.
-    /// </summary>
     public void ShowQuestions(int[] questionIds, Action onComplete = null)
     {
-        StartCoroutine(ShowQuestionsRoutine(questionIds, onComplete));
-    }
-
-    private IEnumerator ShowQuestionsRoutine(int[] questionIds, Action onComplete)
-    {
-        foreach (int qId in questionIds)
+        if (GlobalQuizManager.Instance != null) 
         {
-            bool answered = false;
-            ShowQuestion(qId, () => answered = true);
-            yield return new WaitUntil(() => answered);
+            GlobalQuizManager.Instance.ShowNextChunk(onComplete);
         }
-        onComplete?.Invoke();
+        else 
+        {
+            onComplete?.Invoke();
+        }
     }
 
-    /// <summary>
-    /// Muestra una pregunta específica por su ID de Base de Datos.
-    /// Congela el tiempo y el FPS Controller.
-    /// </summary>
     public void ShowQuestion(int questionId, Action onComplete = null)
     {
-        _onQuestionAnswered = onComplete;
-        
-        if (!_isSurveyLoaded)
+        if (GlobalQuizManager.Instance != null) 
         {
-            Debug.LogWarning("[Motivation API] Survey no cargado aún. Intentando mostrar de nuevo en 1 segundo...");
-            StartCoroutine(WaitAndShowQuestion(questionId));
-            return;
+            GlobalQuizManager.Instance.ShowNextChunk(onComplete);
         }
-
-        MotivationQuestionOut q = _cachedQuestions.FirstOrDefault(x => x.id == questionId);
-        if (q == null)
+        else 
         {
-            Debug.LogError($"[Motivation API] No se encontró la pregunta con ID {questionId}.");
-            _onQuestionAnswered?.Invoke();
-            return;
+            onComplete?.Invoke();
         }
-
-        _currentQuestionIdToShow = questionId;
-
-        // Mostrar Panel y pausar juego
-        SetGamePaused(true);
-        RenderQuestion(q);
-    }
-
-    private IEnumerator WaitAndShowQuestion(int questionId)
-    {
-        yield return new WaitForSecondsRealtime(1f);
-        ShowQuestion(questionId, _onQuestionAnswered);
     }
 
     private void RenderQuestion(MotivationQuestionOut q)
     {
-        if (questionnairePanel != null) questionnairePanel.SetActive(true);
-
-        if (promptText != null) promptText.text = q.prompt;
-        if (statusText != null) statusText.text = "";
-
-        MotivationOptionOut[] opts = q.options ?? Array.Empty<MotivationOptionOut>();
-        
-        for (int i = 0; i < optionButtons.Length; i++)
-        {
-            bool show = i < opts.Length;
-            if (optionButtons[i] != null)
-            {
-                optionButtons[i].gameObject.SetActive(show);
-                if (show)
-                {
-                    var label = optionButtons[i].GetComponentInChildren<TMP_Text>(true);
-                    if (label != null) label.text = opts[i].label;
-
-                    int capturedIndex = i;
-                    int optionId = opts[i].id;
-                    
-                    optionButtons[i].onClick.RemoveAllListeners();
-                    optionButtons[i].onClick.AddListener(() => OnOptionSelected(q.id, optionId));
-                }
-            }
-        }
+        // Ya no se usa
     }
+    // Ya no se necesitan los métodos de renderizado y envío de datos
+    // porque todo se maneja desde GlobalQuizManager.
 
-    private void OnOptionSelected(int questionId, int optionId)
-    {
-        if (_isBusy) return;
-
-        // Comprobamos si hay un UserSession global (igual que en Bartle)
-        // Usamos reflection o llamadas si no existe explícitamente, pero asumimos que tienes UserSession.TryGetUserId
-        int userId = 1; // Fallback
-        if (UserSession.TryGetUserId(out int savedId))
-        {
-            userId = savedId;
-        }
-
-        StartCoroutine(PostAnswer(userId, questionId, optionId));
-    }
-
-    private IEnumerator PostAnswer(int userId, int questionId, int optionId)
-    {
-        _isBusy = true;
-        if (statusText != null) statusText.text = "Enviando respuesta...";
-
-        string url = $"{baseUrl.TrimEnd('/')}/motivation/answers";
-
-        var body = new MotivationAnswerSubmit
-        {
-            user_id = userId,
-            question_id = questionId,
-            option_id = optionId
-        };
-
-        string json = JsonUtility.ToJson(body);
-        byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
-
-        using UnityWebRequest request = new UnityWebRequest(url, "POST");
-        request.uploadHandler = new UploadHandlerRaw(jsonBytes);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        // Usamos SendWebRequest de forma normal porque Time.timeScale = 0 no afecta a UnityWebRequest
-        yield return request.SendWebRequest();
-
-        if (request.result != UnityWebRequest.Result.Success)
-        {
-            if (statusText != null) statusText.text = "Error al enviar. Intenta de nuevo.";
-            Debug.LogError($"[Motivation API] Error POST: {request.error}\n{request.downloadHandler.text}");
-            _isBusy = false;
-            yield break;
-        }
-
-        // Éxito
-        _isBusy = false;
-        
-        // Ocultar panel y reanudar juego
-        if (questionnairePanel != null) questionnairePanel.SetActive(false);
-        SetGamePaused(false);
-
-        _onQuestionAnswered?.Invoke();
-    }
 
     private void SetGamePaused(bool pause)
     {

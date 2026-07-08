@@ -72,7 +72,7 @@ public class GameControl : MonoBehaviour
 
             if (GlobalQuizManager.Instance != null)
             {
-                GlobalQuizManager.Instance.ShowNextChunk();
+                GlobalQuizManager.Instance.ShowMemoryQuestions();
             }
         }
         else if (winText != null)

@@ -44,6 +44,9 @@ public class GlobalQuizManager : MonoBehaviour
 
     private List<UnifiedQuestion> _allQuestions = new List<UnifiedQuestion>();
     private List<List<UnifiedQuestion>> _chunks = new List<List<UnifiedQuestion>>();
+    private List<UnifiedQuestion> _memoryChunk = new List<UnifiedQuestion>();
+    private bool _isMemoryRound = false;
+    private Action _onChunkComplete;
 
     // Puntuaciones locales
     private int _scoreE = 0;
@@ -182,7 +185,7 @@ public class GlobalQuizManager : MonoBehaviour
                         // Asignar imágenes
                         if (q.id == 8 || q.prompt.Contains("¿Qué te produce esta imagen?"))
                             uq.Image = mazmorraSprite;
-                        if (q.prompt.ToLower().Contains("con que asocias el siguiente icono"))
+                        if (q.prompt.ToLower().Contains("asocias") && q.prompt.ToLower().Contains("icono"))
                             uq.Image = coronaSprite;
 
                         bartleQs.Add(uq);
@@ -204,37 +207,37 @@ public class GlobalQuizManager : MonoBehaviour
     {
         return new List<UnifiedQuestion>
         {
-            new UnifiedQuestion { Type = QuestionType.Memory, Id = 1, Prompt = "1: Cual fue el codigo que te dieron cuando cuadraste la fotografía?", Options = new List<UnifiedOption> {
+            new UnifiedQuestion { Type = QuestionType.Memory, Id = 1, Prompt = "Cual fue el codigo que te dieron cuando cuadraste la fotografía?", Options = new List<UnifiedOption> {
                 new UnifiedOption { Id=1, Label="1925", IsCorrect=false },
                 new UnifiedOption { Id=2, Label="1923", IsCorrect=false },
                 new UnifiedOption { Id=3, Label="1922", IsCorrect=true },
                 new UnifiedOption { Id=4, Label="1932", IsCorrect=false }
             }},
-            new UnifiedQuestion { Type = QuestionType.Memory, Id = 2, Prompt = "2) Como se llama el juego?", Options = new List<UnifiedOption> {
+            new UnifiedQuestion { Type = QuestionType.Memory, Id = 2, Prompt = "Como se llama el juego?", Options = new List<UnifiedOption> {
                 new UnifiedOption { Id=1, Label="El taller", IsCorrect=false },
                 new UnifiedOption { Id=2, Label="The garage", IsCorrect=true },
                 new UnifiedOption { Id=3, Label="El mecánico", IsCorrect=false },
                 new UnifiedOption { Id=4, Label="El garaje", IsCorrect=false }
             }},
-            new UnifiedQuestion { Type = QuestionType.Memory, Id = 3, Prompt = "3) Cuántos libros recogiste?", Options = new List<UnifiedOption> {
+            new UnifiedQuestion { Type = QuestionType.Memory, Id = 3, Prompt = "Cuántos libros recogiste?", Options = new List<UnifiedOption> {
                 new UnifiedOption { Id=1, Label="2", IsCorrect=true },
                 new UnifiedOption { Id=2, Label="3", IsCorrect=false },
                 new UnifiedOption { Id=3, Label="4", IsCorrect=false },
                 new UnifiedOption { Id=4, Label="1", IsCorrect=false }
             }},
-            new UnifiedQuestion { Type = QuestionType.Memory, Id = 4, Prompt = "4) Que pieza faltante tenía la caja de switches?", Options = new List<UnifiedOption> {
+            new UnifiedQuestion { Type = QuestionType.Memory, Id = 4, Prompt = "Que pieza faltante tenía la caja de switches?", Options = new List<UnifiedOption> {
                 new UnifiedOption { Id=1, Label="Fusible", IsCorrect=false },
                 new UnifiedOption { Id=2, Label="Switch", IsCorrect=false },
                 new UnifiedOption { Id=3, Label="Medidor de voltaje", IsCorrect=false },
                 new UnifiedOption { Id=4, Label="Palanca", IsCorrect=true }
             }},
-            new UnifiedQuestion { Type = QuestionType.Memory, Id = 5, Prompt = "5) Con cuál tecla recoletabas objetos", Options = new List<UnifiedOption> {
+            new UnifiedQuestion { Type = QuestionType.Memory, Id = 5, Prompt = "Con cuál tecla recoletabas objetos", Options = new List<UnifiedOption> {
                 new UnifiedOption { Id=1, Label="Espacio", IsCorrect=false },
                 new UnifiedOption { Id=2, Label="Tecla E", IsCorrect=true },
                 new UnifiedOption { Id=3, Label="Tecla w", IsCorrect=false },
                 new UnifiedOption { Id=4, Label="Con el mouse", IsCorrect=false }
             }},
-            new UnifiedQuestion { Type = QuestionType.Memory, Id = 6, Prompt = "6) De que color es la puerta del garaje?", Options = new List<UnifiedOption> {
+            new UnifiedQuestion { Type = QuestionType.Memory, Id = 6, Prompt = "De que color es la puerta del garaje?", Options = new List<UnifiedOption> {
                 new UnifiedOption { Id=1, Label="Blanca", IsCorrect=true },
                 new UnifiedOption { Id=2, Label="Gris", IsCorrect=false },
                 new UnifiedOption { Id=3, Label="Negra", IsCorrect=false },
@@ -247,11 +250,14 @@ public class GlobalQuizManager : MonoBehaviour
     {
         // Mezclar Motivación y Bartle de forma "intercalada" o aleatoria controlada
         List<UnifiedQuestion> pool = new List<UnifiedQuestion>();
-        pool.AddRange(motivation);
-        pool.AddRange(bartle);
+        // Evitar duplicados si la API devuelve dobles
+        var motUnique = motivation.GroupBy(x => x.Id).Select(g => g.First());
+        var barUnique = bartle.GroupBy(x => x.Id).Select(g => g.First());
+        pool.AddRange(motUnique);
+        pool.AddRange(barUnique);
         
         // Fisher-Yates shuffle para la mezcla base
-        System.Random rnd = new System.Random(42); // Seed fija para consistencia o quitar para random real
+        System.Random rnd = new System.Random(); // Seed dinámica para aleatoriedad real
         int n = pool.Count;
         while (n > 1) {  
             n--;  
@@ -261,23 +267,21 @@ public class GlobalQuizManager : MonoBehaviour
             pool[n] = value;  
         }
 
-        // Dividimos en 5 chunks
+        // Dividimos en 8 chunks (para los ~8 puzzles del juego)
         _chunks.Clear();
-        for(int i=0; i<5; i++) _chunks.Add(new List<UnifiedQuestion>());
+        int numChunks = 8;
+        for(int i=0; i<numChunks; i++) _chunks.Add(new List<UnifiedQuestion>());
 
-        // Repartir base pool (32 preguntas) en 5 chunks (~6-7 por chunk)
+        // Repartir base pool
         int chunkIdx = 0;
         foreach (var q in pool)
         {
             _chunks[chunkIdx].Add(q);
-            chunkIdx = (chunkIdx + 1) % 5;
+            chunkIdx = (chunkIdx + 1) % numChunks;
         }
 
-        // Las preguntas de memoria van TODAS al bloque 5 (índice 4)
-        foreach (var q in memory)
-        {
-            _chunks[4].Add(q);
-        }
+        // Las preguntas de memoria van separadas
+        _memoryChunk = memory;
 
         // Mezclar cada chunk internamente
         foreach (var chunk in _chunks)
@@ -293,8 +297,9 @@ public class GlobalQuizManager : MonoBehaviour
         }
     }
 
-    public void ShowNextChunk()
+    public void ShowNextChunk(Action onComplete = null)
     {
+        _onChunkComplete = onComplete;
         if (!_isDataLoaded)
         {
             StartCoroutine(WaitAndShowNextChunk());
@@ -303,11 +308,31 @@ public class GlobalQuizManager : MonoBehaviour
 
         if (_currentChunkIndex >= _chunks.Count)
         {
-            // Debug.Log("[GlobalQuizManager] Ya no hay más bloques.");
+            _onChunkComplete?.Invoke();
+            _onChunkComplete = null;
             return;
         }
 
         StartCoroutine(ShowChunkWithDelay());
+    }
+
+    public void ShowMemoryQuestions(Action onComplete = null)
+    {
+        _onChunkComplete = onComplete;
+        if (!_isDataLoaded)
+        {
+            StartCoroutine(WaitAndShowMemoryQuestions());
+            return;
+        }
+
+        _isMemoryRound = true;
+        StartCoroutine(ShowChunkWithDelay());
+    }
+
+    private IEnumerator WaitAndShowMemoryQuestions()
+    {
+        yield return new WaitUntil(() => _isDataLoaded);
+        ShowMemoryQuestions(_onChunkComplete);
     }
 
     private IEnumerator ShowChunkWithDelay()
@@ -329,25 +354,35 @@ public class GlobalQuizManager : MonoBehaviour
 
     private void ShowCurrentQuestion()
     {
-        if (_currentQuestionInChunk >= _chunks[_currentChunkIndex].Count)
+        var activeList = _isMemoryRound ? _memoryChunk : _chunks[_currentChunkIndex];
+
+        if (_currentQuestionInChunk >= activeList.Count)
         {
             // Bloque terminado
             _mainPanel.SetActive(false);
             _canvasGo.SetActive(false);
             SetGamePaused(false);
-            _currentChunkIndex++;
 
-            if (_currentChunkIndex >= 5)
+            if (!_isMemoryRound)
+            {
+                _currentChunkIndex++;
+            }
+            else
             {
                 // Fin del juego -> Mostrar Resumen
                 StartCoroutine(ShowSummarySequence());
             }
+
+            _onChunkComplete?.Invoke();
+            _onChunkComplete = null;
             return;
         }
 
-        var q = _chunks[_currentChunkIndex][_currentQuestionInChunk];
+        var q = activeList[_currentQuestionInChunk];
         _promptText.text = q.Prompt;
-        _progressText.text = $"Bloque {_currentChunkIndex+1}/5 - Pregunta {_currentQuestionInChunk+1}/{_chunks[_currentChunkIndex].Count}";
+        
+        string blockName = _isMemoryRound ? "Final" : $"{_currentChunkIndex+1}/8";
+        _progressText.text = $"Bloque {blockName} - Pregunta {_currentQuestionInChunk+1}/{activeList.Count}";
         _statusText.text = "";
 
         // Manejo de Imagen
@@ -544,16 +579,7 @@ public class GlobalQuizManager : MonoBehaviour
         {
             // Bartle
             _summaryTitleText.text = $"Perfil Bartle: {_finalDomBartle}";
-            
-            if (_bartleSummaryData != null && _bartleSummaryData.counts != null)
-            {
-                var c = _bartleSummaryData.counts;
-                _summaryDetailsText.text = $"Killer: {c.Killer}  Socializer: {c.Socializer}\nAchiever: {c.Achiever}  Explorer: {c.Explorer}";
-            }
-            else
-            {
-                _summaryDetailsText.text = "No se pudo obtener el resumen de Bartle.";
-            }
+            _summaryDetailsText.text = ""; // Sin detalles extras
 
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Siguiente";
             _continueButton.onClick.AddListener(() => { _summaryState++; RenderSummaryState(); });
@@ -562,7 +588,7 @@ public class GlobalQuizManager : MonoBehaviour
         {
             // Motivación Ludo+
             _summaryTitleText.text = $"Perfil Ludo+: {_finalDomMot}";
-            _summaryDetailsText.text = $"Tus Respuestas:\nExplorador (E): {_scoreE}\nOrientado a Logro (L): {_scoreL}\nPor Activar (A): {_scoreA}";
+            _summaryDetailsText.text = ""; // Sin detalles extras
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Siguiente";
             _continueButton.onClick.AddListener(() => { _summaryState++; RenderSummaryState(); });
@@ -571,7 +597,7 @@ public class GlobalQuizManager : MonoBehaviour
         {
             // Memoria
             _summaryTitleText.text = $"Nivel de Memoria: {_finalMemLevel}";
-            _summaryDetailsText.text = $"Puntuación: {_memoryScore} de 6 respuestas correctas.";
+            _summaryDetailsText.text = ""; // Sin detalles extras
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Finalizar";
             _continueButton.onClick.AddListener(() => { 

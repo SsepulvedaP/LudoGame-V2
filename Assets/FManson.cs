@@ -8,44 +8,55 @@ public class FManson : MonoBehaviour
     [SerializeField] private GameObject PressE, canvasPuzzle, camara;
     [SerializeField] private UnityStandardAssets.Characters.FirstPerson.FirstPersonController mouseLocking;
 
+    private bool isPlayerInTrigger = false;
+
     void Awake()
     {
-        PressE.SetActive(false);
-        canvasPuzzle.SetActive(false);
+        if (PressE != null) PressE.SetActive(false);
+        if (canvasPuzzle != null) canvasPuzzle.SetActive(false);
     }
 
     private void Update()
     {
+        if (isPlayerInTrigger)
+        {
+            PlayerInteraction.GlobalHoverText = "[ Presiona 'E' para interactuar ]";
+        }
+
         bool keyEPressed = false;
         if (Keyboard.current != null)
         {
-            keyEPressed = Keyboard.current.eKey.isPressed;
+            keyEPressed = Keyboard.current.eKey.wasPressedThisFrame; // Cambiado a wasPressedThisFrame para mejor respuesta
         }
 
-        if (keyEPressed && PressE != null && PressE.activeInHierarchy)
+        if (keyEPressed && isPlayerInTrigger)
         {
             Debug.Log("Puzzle");
-            canvasPuzzle.SetActive(true);
-            camara.SetActive(true);
-            mouseLocking.m_MouseLook.SetCursorLock(false);
-            PressE.SetActive(false);
+            if (canvasPuzzle != null) canvasPuzzle.SetActive(true);
+            if (camara != null) camara.SetActive(true);
+            if (mouseLocking != null) mouseLocking.m_MouseLook.SetCursorLock(false);
+            
+            isPlayerInTrigger = false;
+            
+            if (PressE != null) PressE.SetActive(false);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("FAMILYM");
-        PressE.SetActive(true);
+        isPlayerInTrigger = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        PressE.SetActive(false);
+        isPlayerInTrigger = false;
     }
 
     public void DisablePermanently()
     {
         enabled = false;
+        isPlayerInTrigger = false;
 
         if (PressE != null)
         {
