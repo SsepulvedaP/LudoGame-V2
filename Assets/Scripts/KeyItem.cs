@@ -3,6 +3,7 @@ using UnityEngine;
 public class KeyItem : MonoBehaviour
 {
     public static bool isKeyCollected = false;
+    [SerializeField] GameObject Llave;
 
     [Tooltip("IDs de las preguntas de motivación en la base de datos")]
     public int[] motivationQuestionIds = new int[] { 26 };
@@ -22,7 +23,7 @@ public class KeyItem : MonoBehaviour
             {
                 GlobalQuizManager.Instance.ShowNextChunk();
             }
-
+            Llave.SetActive(true);
             gameObject.SetActive(false); // Ocultar llave directamente
         }
     }

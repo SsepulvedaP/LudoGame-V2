@@ -3,6 +3,7 @@ using UnityEngine;
 public class LeverCollectible : MonoBehaviour
 {
     public static bool isLeverCollected = false;
+    [SerializeField] GameObject Palanca1;
 
     [Tooltip("IDs de las preguntas de motivación que salen al recoger la palanca")]
     public int[] motivationQuestionIds = new int[] { }; 
@@ -50,7 +51,7 @@ public class LeverCollectible : MonoBehaviour
             {
                 GlobalQuizManager.Instance.ShowNextChunk();
             }
-            
+            Palanca1.SetActive(true);
             OcultarPalanca();
         }
     }
@@ -64,7 +65,9 @@ public class LeverCollectible : MonoBehaviour
         }
         else
         {
+
             gameObject.SetActive(false);
+            
         }
     }
 }
