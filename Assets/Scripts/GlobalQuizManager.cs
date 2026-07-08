@@ -267,9 +267,9 @@ public class GlobalQuizManager : MonoBehaviour
             pool[n] = value;  
         }
 
-        // Dividimos en 8 chunks (para los ~8 puzzles del juego)
+        // Dividimos en 5 chunks (para los 5 puzzles del juego: cuadro, locker, caja, libros, palanca)
         _chunks.Clear();
-        int numChunks = 8;
+        int numChunks = 5;
         for(int i=0; i<numChunks; i++) _chunks.Add(new List<UnifiedQuestion>());
 
         // Repartir base pool
@@ -381,7 +381,7 @@ public class GlobalQuizManager : MonoBehaviour
         var q = activeList[_currentQuestionInChunk];
         _promptText.text = q.Prompt;
         
-        string blockName = _isMemoryRound ? "Final" : $"{_currentChunkIndex+1}/8";
+        string blockName = _isMemoryRound ? "Final" : $"{_currentChunkIndex+1}/5";
         _progressText.text = $"Bloque {blockName} - Pregunta {_currentQuestionInChunk+1}/{activeList.Count}";
         _statusText.text = "";
 

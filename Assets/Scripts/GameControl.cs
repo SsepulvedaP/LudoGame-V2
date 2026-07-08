@@ -33,6 +33,18 @@ public class GameControl : MonoBehaviour
                 $"[GameControl] Asigna en el inspector un array 'pictures' con al menos {ExpectedPieceCount} elementos. Ahora: {(pictures == null ? 0 : pictures.Length)}.",
                 this);
         }
+        else
+        {
+            // Desordenar las piezas del puzzle para que no empiece resuelto
+            for (int i = 0; i < ExpectedPieceCount; i++)
+            {
+                if (pictures[i] != null)
+                {
+                    int randomRotations = Random.Range(1, 4); // 1, 2 o 3 rotaciones de 90 grados
+                    pictures[i].Rotate(0f, 0f, randomRotations * 90f);
+                }
+            }
+        }
 
         if (mouseLocking != null && mouseLocking.m_MouseLook == null)
         {
@@ -72,13 +84,21 @@ public class GameControl : MonoBehaviour
 
             if (GlobalQuizManager.Instance != null)
             {
-                GlobalQuizManager.Instance.ShowMemoryQuestions();
+                GlobalQuizManager.Instance.ShowNextChunk(() => {
+                    if (winText != null)
+                    {
+                        winText.SetActive(true);
+                    }
+                });
+            }
+            else if (winText != null)
+            {
+                winText.SetActive(true);
             }
         }
         else if (winText != null)
         {
             winText.SetActive(true);
-           
         }
 
         if (character != null)
@@ -107,7 +127,13 @@ public class GameControl : MonoBehaviour
                 return false;
             }
 
-            if (t.rotation.z != 0f)
+            // Verificación más robusta usando eulerAngles en lugar de quaternion.z
+            float zRotation = t.eulerAngles.z;
+            zRotation = zRotation % 360f;
+            if (zRotation < 0f) zRotation += 360f;
+
+            // Tolerancia de 1 grado para evitar problemas de punto flotante
+            if (zRotation > 1f && zRotation < 359f)
             {
                 return false;
             }
