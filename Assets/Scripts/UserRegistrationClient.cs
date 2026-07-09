@@ -19,6 +19,7 @@ public class UserRegistrationClient : MonoBehaviour
 
     [Header("UI")]
     public TMP_InputField inputName;
+    public TMP_InputField inputDocument;
     public TMP_Dropdown dropdownCountry;
 
     [Header("Area UI")]
@@ -74,6 +75,7 @@ public class UserRegistrationClient : MonoBehaviour
     {
         public string name;
         public string token;
+        public string document;
         public string country;
         public int positionId;
     }
@@ -470,6 +472,12 @@ public class UserRegistrationClient : MonoBehaviour
             yield break;
         }
 
+        if (inputDocument != null && string.IsNullOrWhiteSpace(inputDocument.text))
+        {
+            Debug.LogError("Escribe un documento.");
+            yield break;
+        }
+
         int areaId = 0;
         string selectedArea = GetSelectedAreaTitle();
 
@@ -498,6 +506,7 @@ public class UserRegistrationClient : MonoBehaviour
         {
             name = inputName.text,
             token = Guid.NewGuid().ToString(),
+            document = inputDocument != null ? inputDocument.text : "",
             country = selectedCountry,
             positionId = areaId
         };

@@ -578,8 +578,22 @@ public class GlobalQuizManager : MonoBehaviour
         if (_summaryState == 0)
         {
             // Bartle
-            _summaryTitleText.text = $"Perfil Bartle: {_finalDomBartle}";
-            _summaryDetailsText.text = ""; // Sin detalles extras
+            string bartleDesc = "";
+            string lowerDom = _finalDomBartle.ToLower();
+            if (lowerDom.Contains("achiever"))
+                bartleDesc = "¡Eres un Achiever! Un jugador motivado por la autosuperación, la acumulación de logros y el dominio total del juego. Te apasiona completar el 100% de los desafíos, coleccionar todas las recompensas posibles y subir de nivel de la forma más eficiente. Tu mayor satisfacción es ver el progreso tangible de tu esfuerzo, superar tus propias metas y demostrar que eres capaz de dominar mecánicas complejas para alcanzar el éxito absoluto.";
+            else if (lowerDom.Contains("explorer"))
+                bartleDesc = "¡Eres un Explorer! Tu perfil destaca por la curiosidad insaciable, el descubrimiento y el deseo de comprender cómo funciona el mundo que te rodea. Te fascina encontrar caminos ocultos, resolver misterios y experimentar con las mecánicas del juego solo para ver qué pasa. Para ti, el verdadero valor no está en competir ni en ganar rápido, sino en sumergirte en la experiencia, conocer cada detalle y desvelar los secretos que otros pasan por alto.";
+            else if (lowerDom.Contains("socializer"))
+                bartleDesc = "¡Eres un Socializer! Un tipo de jugador centrado en las personas, las relaciones y la construcción de comunidad dentro del entorno de juego. Tu principal motivación es interactuar con otros, colaborar en equipo, compartir historias y formar vínculos significativos a través de la partida. Para ti, el juego es un gran escenario social donde el verdadero valor no radica en los puntos o la victoria, sino en las conexiones y los momentos compartidos con los demás.";
+            else if (lowerDom.Contains("killer"))
+                bartleDesc = "¡Eres un Killer! Un perfil impulsado por la competencia directa, el desafío y la dominación estratégica. Te apasiona medir tus habilidades contra el entorno o contra otros jugadores, superar récords y dejar tu huella a través de la victoria. No te conformas con participar; buscas el reconocimiento que viene con el triunfo, convirtiéndote en una fuerza competitiva que define el ritmo de la partida y juega siempre para ganar.";
+
+            _summaryTitleText.text = $"Tipo de jugador: {_finalDomBartle}";
+            _summaryDetailsText.text = bartleDesc;
+            
+            // Adjust details font size for large text if needed
+            _summaryDetailsText.fontSize = 20;
 
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Siguiente";
             _continueButton.onClick.AddListener(() => { _summaryState++; RenderSummaryState(); });
@@ -587,8 +601,9 @@ public class GlobalQuizManager : MonoBehaviour
         else if (_summaryState == 1)
         {
             // Motivación Ludo+
-            _summaryTitleText.text = $"Perfil Ludo+: {_finalDomMot}";
+            _summaryTitleText.text = $"Nivel de motivación: {_finalDomMot}";
             _summaryDetailsText.text = ""; // Sin detalles extras
+            _summaryDetailsText.fontSize = 28;
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Siguiente";
             _continueButton.onClick.AddListener(() => { _summaryState++; RenderSummaryState(); });
@@ -596,8 +611,9 @@ public class GlobalQuizManager : MonoBehaviour
         else if (_summaryState == 2)
         {
             // Memoria
-            _summaryTitleText.text = $"Nivel de Memoria: {_finalMemLevel}";
+            _summaryTitleText.text = $"Memoria a corto plazo + atención: {_finalMemLevel}";
             _summaryDetailsText.text = ""; // Sin detalles extras
+            _summaryDetailsText.fontSize = 28;
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Finalizar";
             _continueButton.onClick.AddListener(() => { 
