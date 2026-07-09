@@ -478,6 +478,12 @@ public class UserRegistrationClient : MonoBehaviour
             yield break;
         }
 
+        if (inputDocument != null && !System.Text.RegularExpressions.Regex.IsMatch(inputDocument.text, @"^[a-zA-Z0-9]+$"))
+        {
+            Debug.LogError("El documento solo puede contener letras y números, sin puntos ni caracteres especiales.");
+            yield break;
+        }
+
         int areaId = 0;
         string selectedArea = GetSelectedAreaTitle();
 
