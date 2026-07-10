@@ -8628,7 +8628,7 @@ GameObject:
   - component: {fileID: 935965270}
   - component: {fileID: 935965269}
   m_Layer: 0
-  m_Name: Panel_Checklist (3)
+  m_Name: Panel_Llave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15581,6 +15581,7 @@ MonoBehaviour:
   destroyInteractPromptOnUnlock: 1
   interactPrompt: {fileID: 0}
   aimReticle: {fileID: 1896847861}
+  extraPanelsToHide: []
 --- !u!1001 &2038090649
 PrefabInstance:
   m_ObjectHideFlags: 0
