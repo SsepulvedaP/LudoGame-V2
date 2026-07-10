@@ -21,6 +21,7 @@ public class UserRegistrationClient : MonoBehaviour
     public TMP_InputField inputName;
     public TMP_InputField inputDocument;
     public TMP_Dropdown dropdownCountry;
+    public TMP_Dropdown Dropdown_Empresa;
 
     [Header("Area UI")]
     public TMP_Dropdown dropdownArea;
@@ -78,6 +79,7 @@ public class UserRegistrationClient : MonoBehaviour
         public string document;
         public string country;
         public int positionId;
+        public string company;
     }
 
     [Serializable]
@@ -131,8 +133,37 @@ public class UserRegistrationClient : MonoBehaviour
     private void Start()
     {
         ConfigureAreaDropdown();
+        ConfigureCompanyDropdown();
         StartCoroutine(LoadCountries());
         StartCoroutine(LoadPositions());
+    }
+
+    private void ConfigureCompanyDropdown()
+    {
+        if (Dropdown_Empresa != null)
+        {
+            Dropdown_Empresa.ClearOptions();
+            // Texto más corto para evitar desbordamiento
+            Dropdown_Empresa.AddOptions(new List<string> { "Seleccione su empresa...", "Stanley Black & Decker" });
+            Dropdown_Empresa.value = 0;
+            Dropdown_Empresa.RefreshShownValue();
+
+            // Ajustes automáticos al componente de texto para evitar que se parta en dos líneas y se superponga
+            if (Dropdown_Empresa.captionText != null)
+            {
+                Dropdown_Empresa.captionText.enableWordWrapping = false;
+                Dropdown_Empresa.captionText.enableAutoSizing = true;
+                Dropdown_Empresa.captionText.fontSizeMin = 12;
+                Dropdown_Empresa.captionText.fontSizeMax = 28;
+            }
+            if (Dropdown_Empresa.itemText != null)
+            {
+                Dropdown_Empresa.itemText.enableWordWrapping = false;
+                Dropdown_Empresa.itemText.enableAutoSizing = true;
+                Dropdown_Empresa.itemText.fontSizeMin = 12;
+                Dropdown_Empresa.itemText.fontSizeMax = 28;
+            }
+        }
     }
 
     private void OnDestroy()
@@ -484,6 +515,12 @@ public class UserRegistrationClient : MonoBehaviour
             yield break;
         }
 
+        if (Dropdown_Empresa != null && Dropdown_Empresa.value == 0)
+        {
+            Debug.LogError("Por favor seleccione una empresa.");
+            yield break;
+        }
+
         int areaId = 0;
         string selectedArea = GetSelectedAreaTitle();
 
@@ -507,6 +544,7 @@ public class UserRegistrationClient : MonoBehaviour
         }
 
         string selectedCountry = countryValues[dropdownCountry.value];
+        string selectedCompany = Dropdown_Empresa != null ? Dropdown_Empresa.options[Dropdown_Empresa.value].text : "Stanley Black & Decker";
 
         CreateUserRequest body = new CreateUserRequest
         {
@@ -514,7 +552,8 @@ public class UserRegistrationClient : MonoBehaviour
             token = Guid.NewGuid().ToString(),
             document = inputDocument != null ? inputDocument.text : "",
             country = selectedCountry,
-            positionId = areaId
+            positionId = areaId,
+            company = selectedCompany
         };
 
         string json = JsonUtility.ToJson(body);

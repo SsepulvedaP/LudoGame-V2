@@ -593,7 +593,7 @@ public class GlobalQuizManager : MonoBehaviour
             _summaryDetailsText.text = bartleDesc;
             
             // Adjust details font size for large text if needed
-            _summaryDetailsText.fontSize = 20;
+            _summaryDetailsText.fontSize = 26;
 
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Siguiente";
             _continueButton.onClick.AddListener(() => { _summaryState++; RenderSummaryState(); });
@@ -603,7 +603,7 @@ public class GlobalQuizManager : MonoBehaviour
             // Motivación Ludo+
             _summaryTitleText.text = $"Nivel de motivación: {_finalDomMot}";
             _summaryDetailsText.text = ""; // Sin detalles extras
-            _summaryDetailsText.fontSize = 28;
+            _summaryDetailsText.fontSize = 36;
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Siguiente";
             _continueButton.onClick.AddListener(() => { _summaryState++; RenderSummaryState(); });
@@ -613,7 +613,7 @@ public class GlobalQuizManager : MonoBehaviour
             // Memoria
             _summaryTitleText.text = $"Memoria a corto plazo + atención: {_finalMemLevel}";
             _summaryDetailsText.text = ""; // Sin detalles extras
-            _summaryDetailsText.fontSize = 28;
+            _summaryDetailsText.fontSize = 36;
             
             _continueButton.GetComponentInChildren<TMP_Text>().text = "Finalizar";
             _continueButton.onClick.AddListener(() => { 
@@ -687,10 +687,10 @@ public class GlobalQuizManager : MonoBehaviour
 
         // Summary Panel
         _summaryPanel = CreateUiPanel("SummaryPanel", _canvasGo.transform, new Color(0.02f, 0.02f, 0.04f, 0.98f));
-        _summaryTitleText = CreateTmp("Title", _summaryPanel.transform, 40, TextAlignmentOptions.Center, new Vector2(0, -150), new Vector2(0, -250));
-        _summaryDetailsText = CreateTmp("Details", _summaryPanel.transform, 28, TextAlignmentOptions.Center, new Vector2(0, -300), new Vector2(0, -600));
+        _summaryTitleText = CreateTmp("Title", _summaryPanel.transform, 48, TextAlignmentOptions.Center, new Vector2(0, -50), new Vector2(0, -150));
+        _summaryDetailsText = CreateTmp("Details", _summaryPanel.transform, 34, TextAlignmentOptions.Center, new Vector2(0, -150), new Vector2(0, -450));
         
-        _continueButton = CreateCenteredButton(_summaryPanel.transform, "Continuar", new Vector2(0, -280));
+        _continueButton = CreateCenteredButton(_summaryPanel.transform, "Continuar", new Vector2(0, -150));
         
         _summaryPanel.SetActive(false);
         _canvasGo.SetActive(false);

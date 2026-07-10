@@ -14,7 +14,7 @@ public class KeypadCameraFocus : MonoBehaviour
 
     [Header("Vista del keypad")]
     [SerializeField] private Transform focusViewpoint;
-    [SerializeField] private float focusFov = 28f;
+    [SerializeField] private float focusFov = 55f;
     [SerializeField] private float focusTransitionSeconds = 0.45f;
 
     [Header("Detección")]
@@ -37,6 +37,10 @@ public class KeypadCameraFocus : MonoBehaviour
     [SerializeField] private GameObject interactPrompt;
     [Tooltip("UI Selector del inventario. Se oculta en modo zoom (es un rectángulo grande, no un cursor).")]
     [SerializeField] private RectTransform aimReticle;
+
+    [Tooltip("Arrastra aquí los paneles (como Inventario, Llave, Palanca) que quieres ocultar al usar el keypad")]
+    public GameObject[] extraPanelsToHide;
+    private bool[] _extraPanelsState;
 
     private Coroutine _unlockRoutine;
     private bool _keypadUnlocked;
@@ -374,6 +378,24 @@ public class KeypadCameraFocus : MonoBehaviour
         _blend = 0f;
         _blending = true;
         SetPromptVisible(false);
+
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.SetVisible(false);
+        }
+
+        if (extraPanelsToHide != null)
+        {
+            _extraPanelsState = new bool[extraPanelsToHide.Length];
+            for (int i = 0; i < extraPanelsToHide.Length; i++)
+            {
+                if (extraPanelsToHide[i] != null)
+                {
+                    _extraPanelsState[i] = extraPanelsToHide[i].activeSelf;
+                    extraPanelsToHide[i].SetActive(false);
+                }
+            }
+        }
     }
 
     public void ExitFocus()
@@ -402,6 +424,22 @@ public class KeypadCameraFocus : MonoBehaviour
         _blend = 0f;
         _blending = true;
         _focused = false;
+
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.SetVisible(true);
+        }
+
+        if (extraPanelsToHide != null && _extraPanelsState != null)
+        {
+            for (int i = 0; i < extraPanelsToHide.Length; i++)
+            {
+                if (extraPanelsToHide[i] != null && i < _extraPanelsState.Length)
+                {
+                    extraPanelsToHide[i].SetActive(_extraPanelsState[i]);
+                }
+            }
+        }
     }
 
     private void StepBlend()

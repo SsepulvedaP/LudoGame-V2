@@ -16,7 +16,11 @@ public class KeyItem : MonoBehaviour
             isKeyCollected = true;
             // Debug.Log("¡Llave recogida!");
             
-            // Ya no completamos la tarea aquí, porque la tarea es abrir el locker, no tomar la llave.
+            // Nueva misión: Tomar la llave
+            if (TaskManager.Instance != null)
+            {
+                TaskManager.Instance.CompletarTomarLlave();
+            }
             
             // Mostrar preguntas del GlobalQuizManager al recoger la llave
             if (GlobalQuizManager.Instance != null)

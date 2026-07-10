@@ -119,7 +119,22 @@ public class TaskManager : MonoBehaviour
     // Funciones de ayuda
     public void CompletarCuadro() => CompleteTask("cuadro");
     public void CompletarLlave() => CompleteTask("llave");
+    public void CompletarTomarLlave() => CompleteTask("tomar_llave");
     public void CompletarCaja() => CompleteTask("caja");
     public void CompletarLibros() => CompleteTask("libros");
     public void CompletarPalanca() => CompleteTask("palanca");
+
+    // Mostrar/Ocultar todo el panel de objetivos (útil para el keypad)
+    public void SetVisible(bool isVisible)
+    {
+        CanvasGroup cg = GetComponent<CanvasGroup>();
+        if (cg == null)
+        {
+            cg = gameObject.AddComponent<CanvasGroup>();
+        }
+        
+        cg.alpha = isVisible ? 1f : 0f;
+        cg.interactable = isVisible;
+        cg.blocksRaycasts = isVisible;
+    }
 }
