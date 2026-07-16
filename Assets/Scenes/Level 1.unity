@@ -4909,10 +4909,10 @@ RectTransform:
   - {fileID: 1448560289}
   m_Father: {fileID: 763822586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90.633}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 55.5, y: -75.3}
+  m_SizeDelta: {x: 61, y: 100.600006}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &530133326
 MonoBehaviour:
@@ -7287,7 +7287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &763822586
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8633,7 +8633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &935965268
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10036,10 +10036,10 @@ RectTransform:
   - {fileID: 441562140}
   m_Father: {fileID: 935965268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 25, y: -75.3}
+  m_SizeDelta: {x: 61, y: 100.600006}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1143073621
 MonoBehaviour:
@@ -15581,7 +15581,8 @@ MonoBehaviour:
   destroyInteractPromptOnUnlock: 1
   interactPrompt: {fileID: 0}
   aimReticle: {fileID: 1896847861}
-  extraPanelsToHide: []
+  extraPanelsToHide:
+  - {fileID: 537721523}
 --- !u!1001 &2038090649
 PrefabInstance:
   m_ObjectHideFlags: 0
