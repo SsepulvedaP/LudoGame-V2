@@ -4909,10 +4909,10 @@ RectTransform:
   - {fileID: 1441340977}
   m_Father: {fileID: 763822586}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90.633}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 55.5, y: -75.3}
+  m_SizeDelta: {x: 61, y: 100.600006}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &530133326
 MonoBehaviour:
@@ -7287,7 +7287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &763822586
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8633,7 +8633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &935965268
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10036,10 +10036,10 @@ RectTransform:
   - {fileID: 441562140}
   m_Father: {fileID: 935965268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 25, y: -75.3}
+  m_SizeDelta: {x: 61, y: 100.600006}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1143073621
 MonoBehaviour:
@@ -12420,7 +12420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bfe227af9cf4ef42ad5cb6e99e4be6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeverCollectible
-  Palanca1: {fileID: 530133324}
+  Palanca1: {fileID: 763822585}
   motivationQuestionIds: 
   parentBox: {fileID: 772003443}
 --- !u!1 &1532171928
@@ -13735,7 +13735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b12f380f8080b94c910ba54e795c245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyItem
-  Llave: {fileID: 1143073619}
+  Llave: {fileID: 935965267}
   motivationQuestionIds: 090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
 --- !u!65 &1707846402
 BoxCollider:
