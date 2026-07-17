@@ -30,7 +30,14 @@ public class TaskManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this; // Sobrescribir la instancia para evitar bugs de destrucción en el editor
+        // Protección de Singleton: Si ya existe una instancia válida, destruimos este componente duplicado
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning($"[TaskManager] Se encontró un TaskManager duplicado en '{gameObject.name}'. Destruyéndolo para proteger la instancia principal.");
+            Destroy(this);
+            return;
+        }
+        Instance = this;
 
         // Preparamos el emisor de audio de forma dinámica
         audioSource = GetComponent<AudioSource>();
@@ -61,23 +68,49 @@ public class TaskManager : MonoBehaviour
 
     public void CompleteTask(string taskId)
     {
-        // Debug.Log($"[TaskManager] Intentando completar tarea: {taskId}");
-        foreach (var task in tasks)
+        try
         {
-            if (task.id == taskId && !task.isCompleted)
-            {
-                task.isCompleted = true;
-                // Debug.Log($"[TaskManager] ¡Tarea '{taskId}' completada con éxito!");
-                
-                // Dispara la animación de completar
-                StartCoroutine(AnimateTaskCompletion(task));
-                
-                if (completeSound != null)
-                {
-                    audioSource.PlayOneShot(completeSound);
+            string cleanTaskId = taskId != null ? taskId.Trim().ToLower() : "";
+            
+            // Vamos a listar qué tareas tiene en memoria realmente para ver si faltan
+            string allIds = "";
+            if (tasks != null) {
+                foreach (var t in tasks) { 
+                    if (t != null) allIds += "'" + t.id + "' "; 
                 }
-                break;
             }
+            
+            Debug.Log($"[TaskManager] Intentando completar tarea: '{cleanTaskId}'. IDs en lista: {allIds}");
+            
+            if (tasks == null) return;
+
+            foreach (var task in tasks)
+            {
+                if (task == null) continue;
+                
+                string cleanTaskObjId = task.id != null ? task.id.Trim().ToLower() : "";
+                if (cleanTaskObjId == cleanTaskId && !task.isCompleted)
+                {
+                    task.isCompleted = true;
+                    Debug.Log($"[TaskManager] ¡Tarea '{cleanTaskId}' completada con éxito!");
+                    
+                    // Dispara la animación de completar si tiene los componentes visuales
+                    if (this.gameObject.activeInHierarchy) 
+                    {
+                        StartCoroutine(AnimateTaskCompletion(task));
+                    }
+                    
+                    if (completeSound != null && audioSource != null)
+                    {
+                        audioSource.PlayOneShot(completeSound);
+                    }
+                    break;
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[TaskManager] Error al intentar completar la tarea {taskId}: {e.Message}");
         }
     }
 

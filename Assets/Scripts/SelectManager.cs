@@ -41,7 +41,7 @@ public class SelectManager : MonoBehaviour
         ClearHighlight();
 
         var cam = Camera.main;
-        if (cam == null)
+        if (cam == null || Time.timeScale == 0f)
         {
             return;
         }

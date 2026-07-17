@@ -4965,7 +4965,6 @@ GameObject:
   - component: {fileID: 537721528}
   - component: {fileID: 537721527}
   - component: {fileID: 537721526}
-  - component: {fileID: 537721525}
   m_Layer: 0
   m_Name: Panel_Inventario
   m_TagString: Untagged
@@ -4993,42 +4992,6 @@ RectTransform:
   m_AnchoredPosition: {x: -30, y: -309.38}
   m_SizeDelta: {x: 330, y: 291.8105}
   m_Pivot: {x: 1, y: 1}
---- !u!114 &537721525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 537721523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9cded841aa00804caf42b03bbb273a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TaskManager
-  tasks:
-  - id: cuadro
-    checkmarkRoot: {fileID: 0}
-    textComponent: {fileID: 0}
-    isCompleted: 0
-  - id: llave
-    checkmarkRoot: {fileID: 0}
-    textComponent: {fileID: 0}
-    isCompleted: 0
-  - id: caja
-    checkmarkRoot: {fileID: 0}
-    textComponent: {fileID: 0}
-    isCompleted: 0
-  - id: libros
-    checkmarkRoot: {fileID: 0}
-    textComponent: {fileID: 0}
-    isCompleted: 0
-  - id: palanca
-    checkmarkRoot: {fileID: 0}
-    textComponent: {fileID: 0}
-    isCompleted: 0
-  completedTextColor: {r: 0.6, g: 0.6, b: 0.6, a: 0.5}
-  checkmarkColor: {r: 0.2, g: 0.9, b: 0.4, a: 1}
-  completeSound: {fileID: 0}
 --- !u!114 &537721526
 MonoBehaviour:
   m_ObjectHideFlags: 0

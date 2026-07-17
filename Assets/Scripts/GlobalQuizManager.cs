@@ -625,6 +625,11 @@ public class GlobalQuizManager : MonoBehaviour
                     // Forzar final de GameControl si no se activó
                     GameControl.youWin = true;
                 }
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#else
+                Application.Quit();
+#endif
             });
         }
     }
