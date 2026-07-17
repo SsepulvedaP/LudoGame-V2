@@ -360,12 +360,21 @@ public class GlobalQuizManager : MonoBehaviour
         {
             // Bloque terminado
             _mainPanel.SetActive(false);
-            _canvasGo.SetActive(false);
-            SetGamePaused(false);
 
             if (!_isMemoryRound)
             {
                 _currentChunkIndex++;
+                if (_currentChunkIndex >= _chunks.Count && _memoryChunk.Count > 0)
+                {
+                    // Transición automática a la ronda de memoria
+                    _isMemoryRound = true;
+                    StartCoroutine(ShowChunkWithDelay());
+                    return;
+                }
+                
+                // Si no es el último bloque, cerramos el canvas y resumimos el juego
+                _canvasGo.SetActive(false);
+                SetGamePaused(false);
             }
             else
             {
@@ -652,10 +661,10 @@ public class GlobalQuizManager : MonoBehaviour
         // Main Panel
         _mainPanel = CreateUiPanel("MainPanel", _canvasGo.transform, new Color(0.07f, 0.07f, 0.09f, 0.94f));
 
-        _promptText = CreateTmp("Prompt", _mainPanel.transform, 32, TextAlignmentOptions.TopLeft, new Vector2(80, -140), new Vector2(-80, -320));
+        _promptText = CreateTmp("Prompt", _mainPanel.transform, 32, TextAlignmentOptions.TopLeft, new Vector2(80, 600), new Vector2(-80, -150));
         _promptText.textWrappingMode = TextWrappingModes.Normal;
 
-        _progressText = CreateTmp("Progress", _mainPanel.transform, 22, TextAlignmentOptions.TopRight, new Vector2(80, -80), new Vector2(-80, -130));
+        _progressText = CreateTmp("Progress", _mainPanel.transform, 22, TextAlignmentOptions.TopRight, new Vector2(80, 950), new Vector2(-80, -50));
         _statusText = CreateTmp("Status", _mainPanel.transform, 18, TextAlignmentOptions.Bottom, new Vector2(80, 40), new Vector2(-80, 120));
         _statusText.color = new Color(1f, 0.55f, 0.45f, 1f);
 
@@ -692,10 +701,12 @@ public class GlobalQuizManager : MonoBehaviour
 
         // Summary Panel
         _summaryPanel = CreateUiPanel("SummaryPanel", _canvasGo.transform, new Color(0.02f, 0.02f, 0.04f, 0.98f));
-        _summaryTitleText = CreateTmp("Title", _summaryPanel.transform, 48, TextAlignmentOptions.Center, new Vector2(0, -50), new Vector2(0, -150));
-        _summaryDetailsText = CreateTmp("Details", _summaryPanel.transform, 34, TextAlignmentOptions.Center, new Vector2(0, -150), new Vector2(0, -450));
         
-        _continueButton = CreateCenteredButton(_summaryPanel.transform, "Continuar", new Vector2(0, -150));
+        // Ajustamos offsetMin (left, bottom) y offsetMax (right, top) para que los textos no se salgan de la pantalla por debajo.
+        _summaryTitleText = CreateTmp("Title", _summaryPanel.transform, 48, TextAlignmentOptions.Center, new Vector2(50, 700), new Vector2(-50, -100));
+        _summaryDetailsText = CreateTmp("Details", _summaryPanel.transform, 34, TextAlignmentOptions.Center, new Vector2(100, 200), new Vector2(-100, -300));
+        
+        _continueButton = CreateCenteredButton(_summaryPanel.transform, "Continuar", new Vector2(0, 100));
         
         _summaryPanel.SetActive(false);
         _canvasGo.SetActive(false);
@@ -790,8 +801,8 @@ public class GlobalQuizManager : MonoBehaviour
         GameObject go = new GameObject("Btn", typeof(RectTransform), typeof(Image), typeof(Button));
         go.transform.SetParent(parent, false);
         RectTransform rt = go.GetComponent<RectTransform>();
-        rt.anchorMin = new Vector2(0.5f, 1); rt.anchorMax = new Vector2(0.5f, 1);
-        rt.pivot = new Vector2(0.5f, 1);
+        rt.anchorMin = new Vector2(0.5f, 0); rt.anchorMax = new Vector2(0.5f, 0);
+        rt.pivot = new Vector2(0.5f, 0);
         rt.anchoredPosition = pos;
         rt.sizeDelta = new Vector2(300, 68);
 

@@ -142,10 +142,10 @@ public class LeverPuzzle : MonoBehaviour
         // Ejecutar evento opcional
         onLeverPlaced?.Invoke();
 
-        // Mostrar preguntas de memoria (bloque final)
+        // Mostrar el siguiente bloque de preguntas (si es el último, GlobalQuizManager pasará a memoria automáticamente)
         if (GlobalQuizManager.Instance != null)
         {
-            GlobalQuizManager.Instance.ShowMemoryQuestions();
+            GlobalQuizManager.Instance.ShowNextChunk();
         }
     }
 }
