@@ -306,8 +306,18 @@ public class GlobalQuizManager : MonoBehaviour
             return;
         }
 
+        bool allTasksDone = TaskManager.Instance != null && TaskManager.Instance.AreAllTasksCompleted();
+
         if (_currentChunkIndex >= _chunks.Count)
         {
+            if (allTasksDone && _memoryChunk.Count > 0 && !_isMemoryRound)
+            {
+                // Si ya no quedan chunks y se completaron todas las tareas, ir directo a memoria
+                _isMemoryRound = true;
+                StartCoroutine(ShowChunkWithDelay());
+                return;
+            }
+
             _onChunkComplete?.Invoke();
             _onChunkComplete = null;
             return;
@@ -364,15 +374,19 @@ public class GlobalQuizManager : MonoBehaviour
             if (!_isMemoryRound)
             {
                 _currentChunkIndex++;
-                if (_currentChunkIndex >= _chunks.Count && _memoryChunk.Count > 0)
+                bool allTasksDone = TaskManager.Instance != null && TaskManager.Instance.AreAllTasksCompleted();
+
+                if ((_currentChunkIndex >= _chunks.Count || allTasksDone) && _memoryChunk.Count > 0 && allTasksDone)
                 {
-                    // Transición automática a la ronda de memoria
+                    // Transición automática a la ronda de memoria solo si todas las tareas están completadas
                     _isMemoryRound = true;
-                    StartCoroutine(ShowChunkWithDelay());
+                    _currentQuestionInChunk = 0;
+                    _mainPanel.SetActive(true);
+                    ShowCurrentQuestion();
                     return;
                 }
                 
-                // Si no es el último bloque, cerramos el canvas y resumimos el juego
+                // Si no es el último bloque (y/o no se han terminado las tareas), cerramos el canvas y resumimos el juego
                 _canvasGo.SetActive(false);
                 SetGamePaused(false);
             }

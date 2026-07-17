@@ -157,6 +157,19 @@ public class TaskManager : MonoBehaviour
     public void CompletarLibros() => CompleteTask("libros");
     public void CompletarPalanca() => CompleteTask("palanca");
 
+    public bool AreAllTasksCompleted()
+    {
+        if (tasks == null || tasks.Length == 0) return true;
+        foreach (var task in tasks)
+        {
+            if (task != null && !task.isCompleted)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Mostrar/Ocultar todo el panel de objetivos (útil para el keypad)
     public void SetVisible(bool isVisible)
     {
